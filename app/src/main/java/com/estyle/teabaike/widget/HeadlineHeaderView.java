@@ -2,10 +2,11 @@ package com.estyle.teabaike.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.estyle.teabaike.R;
 import com.estyle.teabaike.adapter.HeadlinePagerAdapter;
@@ -13,6 +14,7 @@ import com.estyle.teabaike.adapter.MainAdapter;
 import com.estyle.teabaike.application.MyApplication;
 import com.estyle.teabaike.bean.HeadlineBean;
 import com.estyle.teabaike.callback.HeadlineHttpService;
+import com.estyle.teabaike.databinding.ViewHeadlineHeaderBinding;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -26,9 +28,7 @@ import rx.schedulers.Schedulers;
 
 public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageChangeListener {
 
-    private ViewPager headlineViewPager;
-    private TextView headlineTextView;
-    private PointView pointView;
+    private ViewHeadlineHeaderBinding binding;
 
     private int currentPosition;
 
@@ -40,11 +40,8 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
 
     public HeadlineHeaderView(@NonNull Context context) {
         super(context);
-        HeadlineHeaderView rootView = ((HeadlineHeaderView) inflate(getContext(),
-                R.layout.view_headline_header, this));
-        headlineViewPager = (ViewPager) rootView.findViewById(R.id.headline_view_pager);
-        headlineTextView = (TextView) rootView.findViewById(R.id.headline_tv);
-        pointView = (PointView) rootView.findViewById(R.id.point_view);
+        binding = DataBindingUtil.inflate(LayoutInflater.from(context),
+                R.layout.view_headline_header, this, true);
     }
 
     public void show(MainAdapter parentAdapter) {
@@ -75,13 +72,13 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
                 @Override
                 public void call(List<HeadlineBean.DataBean> datas) {
                     HeadlineHeaderView.this.datas = datas;
-                    pointView.setPointCount(datas.size());
+                    binding.pointView.setPointCount(datas.size());
 
-                    headlineTextView.setText(datas.get(0).getTitle());
+                    binding.headlineTextView.setText(datas.get(0).getTitle());
 
                     HeadlinePagerAdapter adapter = new HeadlinePagerAdapter(getContext(), datas);
-                    headlineViewPager.setAdapter(adapter);
-                    headlineViewPager.addOnPageChangeListener(HeadlineHeaderView.this);
+                    binding.headlineViewPager.setAdapter(adapter);
+                    binding.headlineViewPager.addOnPageChangeListener(HeadlineHeaderView.this);
                     parentAdapter.addHeaderView(HeadlineHeaderView.this);
                     startAutoPlay();
                 }
@@ -89,14 +86,15 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
     }
 
     @Override
     public void onPageSelected(int position) {
         currentPosition = position;
-        int realPosition = position % pointView.getPointCount();
-        headlineTextView.setText(datas.get(realPosition).getTitle());
-        pointView.setSelectedPosition(realPosition);
+        int realPosition = position % binding.pointView.getPointCount();
+        binding.headlineTextView.setText(datas.get(realPosition).getTitle());
+        binding.pointView.setSelectedPosition(realPosition);
     }
 
     @Override
@@ -125,12 +123,12 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
     private Action1<Long> action1 = new Action1<Long>() {
         @Override
         public void call(Long aLong) {
-            headlineViewPager.setCurrentItem(++currentPosition);
+            binding.headlineViewPager.setCurrentItem(++currentPosition);
         }
     };
 
     public void onDestroy() {
-        headlineViewPager.removeOnPageChangeListener(this);
+        binding.headlineViewPager.removeOnPageChangeListener(this);
         httpSubscription.unsubscribe();
         intervalSubscription.unsubscribe();
     }
