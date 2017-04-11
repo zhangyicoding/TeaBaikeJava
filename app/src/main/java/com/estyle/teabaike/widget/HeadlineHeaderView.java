@@ -10,7 +10,6 @@ import android.widget.FrameLayout;
 
 import com.estyle.teabaike.R;
 import com.estyle.teabaike.adapter.HeadlinePagerAdapter;
-import com.estyle.teabaike.adapter.MainAdapter;
 import com.estyle.teabaike.application.MyApplication;
 import com.estyle.teabaike.bean.HeadlineBean;
 import com.estyle.teabaike.callback.HeadlineHttpService;
@@ -36,16 +35,13 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
     private Subscription httpSubscription;
     private Subscription intervalSubscription;
 
-    private MainAdapter parentAdapter;
-
     public HeadlineHeaderView(@NonNull Context context) {
         super(context);
         binding = DataBindingUtil.inflate(LayoutInflater.from(context),
                 R.layout.view_headline_header, this, true);
     }
 
-    public void show(MainAdapter parentAdapter) {
-        this.parentAdapter = parentAdapter;
+    public void loadData() {
         httpSubscription = ((MyApplication) ((Activity) getContext())
                 .getApplication())
                 .getRetrofit()
@@ -54,7 +50,7 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
                 .subscribeOn(Schedulers.io())
                 .map(func)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onNext);
+                .subscribe(onNext, onError);
     }
 
     // Databinding和Java8 Lambda冲突
@@ -79,10 +75,16 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
                     HeadlinePagerAdapter adapter = new HeadlinePagerAdapter(getContext(), datas);
                     binding.headlineViewPager.setAdapter(adapter);
                     binding.headlineViewPager.addOnPageChangeListener(HeadlineHeaderView.this);
-                    parentAdapter.addHeaderView(HeadlineHeaderView.this);
                     startAutoPlay();
                 }
             };
+
+    // Databinding和Java8 Lambda冲突
+    private Action1<Throwable> onError = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+        }
+    };
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

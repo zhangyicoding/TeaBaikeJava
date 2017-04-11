@@ -73,7 +73,7 @@ public class MainFragment extends Fragment implements MainAdapter.OnItemClickLis
 
             if (type == 0) {
                 headerView = new HeadlineHeaderView(getContext());
-                headerView.show(adapter);
+                adapter.addHeaderView(headerView);
             }
 
             binding.mainPullToRefresh.setMode(PullToRefreshBase.Mode.BOTH);
@@ -89,6 +89,9 @@ public class MainFragment extends Fragment implements MainAdapter.OnItemClickLis
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (!isViewCreated) {
+            if (type == 0) {
+                headerView.loadData();
+            }
             loadData(page, false);
             isViewCreated = true;
         }
