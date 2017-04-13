@@ -1,7 +1,6 @@
 package com.estyle.teabaike.databinding;
 
 import android.databinding.BindingAdapter;
-import android.text.TextUtils;
 import android.webkit.WebView;
 import android.widget.ImageView;
 
@@ -12,13 +11,11 @@ public class MyBindingAdapter {
 
     @BindingAdapter("imgUrl")// 布局中使用的属性名
     public static void loadImage(ImageView imageView, String url) {
-        if (!TextUtils.isEmpty(url)) {
-            Glide.with(imageView.getContext())
-                    .load(url)
-                    .into(imageView);
-        } else {
-            imageView.setImageResource(R.mipmap.ic_launcher);
-        }
+        Glide.with(imageView.getContext())
+                .load(url)
+                .placeholder(R.mipmap.ic_launcher)
+                .error(R.mipmap.ic_launcher)
+                .into(imageView);
     }
 
     @BindingAdapter("webData")
