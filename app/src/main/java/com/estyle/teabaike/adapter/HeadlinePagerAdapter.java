@@ -33,7 +33,9 @@ public class HeadlinePagerAdapter extends PagerAdapter implements View.OnClickLi
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setOnClickListener(this);
             viewList.add(imageView);
-            Glide.with(context).load(datas.get(i).getImage()).into(imageView);
+            Glide.with(context)
+                    .load(datas.get(i).getImage())
+                    .into(imageView);
         }
     }
 
