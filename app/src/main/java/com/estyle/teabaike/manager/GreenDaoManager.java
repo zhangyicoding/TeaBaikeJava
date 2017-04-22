@@ -19,29 +19,11 @@ public class GreenDaoManager {
 
     private DaoSession daoSession;
 
-
     public GreenDaoManager(Context context) {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, DB_NAME);
         Database db = helper.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
     }
-
-    // 收藏文章
-//    public void collectData(ContentDataBean data) {
-//        CollectionBeanDao collectionDao = daoSession.getCollectionBeanDao();
-//        Query<CollectionBean> query = collectionDao.queryBuilder()
-//                .where(CollectionBeanDao.Properties.Id.eq(data.getId()))
-//                .build();
-//        if (query.unique() == null) {
-//            CollectionBean collection = new CollectionBean(Long.parseLong(data.getId()),
-//                    System.currentTimeMillis(),
-//                    data.getTitle(),
-//                    data.getSource(),
-//                    data.getCreate_time(),
-//                    data.getAuthor());
-//            collectionDao.insert(collection);
-//        }
-//    }
 
     // 收藏文章
     public void collectData(ContentDataBean data) {
@@ -78,7 +60,7 @@ public class GreenDaoManager {
     // 删除收藏的文章
     public void deleteCollectionData(List<TempCollectionBean> tempList) {
         for (TempCollectionBean tempCollection : tempList) {
-            daoSession.getCollectionBeanDao().delete(tempCollection.getCollection());
+            daoSession.getContentDataBeanDao().delete(tempCollection.getCollection());
         }
         tempList.clear();
     }

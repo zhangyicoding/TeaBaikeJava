@@ -83,7 +83,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         int count = 0;
         for (int i = deleteStateList.size() - 1; i >= 0; i--) {
             if (deleteStateList.get(i)) {
-//                tempList.add(new TempCollectionBean(i, datas.get(i)));
+                tempList.add(new TempCollectionBean(i, datas.get(i)));
                 datas.remove(i);
                 deleteStateList.remove(i);
                 count++;
@@ -96,7 +96,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     public void restoreTempItem() {
         for (int i = tempList.size() - 1; i >= 0; i--) {
             TempCollectionBean tempCollection = tempList.get(i);
-//            datas.add(tempCollection.getPosition(), tempCollection.getCollection());
+            datas.add(tempCollection.getPosition(), tempCollection.getCollection());
             deleteStateList.add(tempCollection.getPosition(), false);
         }
         notifyDataSetChanged();
