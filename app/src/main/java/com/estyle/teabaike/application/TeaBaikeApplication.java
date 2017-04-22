@@ -5,6 +5,7 @@ import android.app.Application;
 import com.estyle.teabaike.dagger.component.DaggerTeaBaikeComponent;
 import com.estyle.teabaike.dagger.component.TeaBaikeComponent;
 import com.estyle.teabaike.dagger.module.DataModule;
+import com.estyle.teabaike.dagger.module.TimerModule;
 
 public class TeaBaikeApplication extends Application {
 
@@ -23,6 +24,7 @@ public class TeaBaikeApplication extends Application {
         component = DaggerTeaBaikeComponent
                 .builder()
                 .dataModule(new DataModule(this))
+                .timerModule(new TimerModule(this))
                 .build();
     }
 

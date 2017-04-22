@@ -13,15 +13,13 @@ import com.estyle.teabaike.application.TeaBaikeApplication;
 import com.estyle.teabaike.bean.HeadlineBean;
 import com.estyle.teabaike.databinding.ViewHeadlineHeaderBinding;
 import com.estyle.teabaike.manager.RetrofitManager;
+import com.estyle.teabaike.manager.TimerManager;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageChangeListener {
@@ -36,6 +34,8 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
 
     @Inject
     RetrofitManager retrofitManager;
+    @Inject
+    TimerManager timerManager;
 
     public HeadlineHeaderView(@NonNull Context context) {
         super(context);
@@ -97,8 +97,7 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
 
     // 自动循环播放ViewPager
     public void startAutoPlay() {
-        intervalSubscription = Observable.interval(2, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
+        intervalSubscription = timerManager.loop()
                 .subscribe(action1);
     }
 
