@@ -1,13 +1,14 @@
 package com.estyle.teabaike.manager;
 
 import com.estyle.teabaike.bean.ContentBean;
+import com.estyle.teabaike.bean.ContentDataBean;
 import com.estyle.teabaike.bean.HeadlineBean;
 import com.estyle.teabaike.bean.MainBean;
+import com.estyle.teabaike.constant.Url;
 import com.estyle.teabaike.retrofit.ContentHttpService;
 import com.estyle.teabaike.retrofit.HeadlineHttpService;
 import com.estyle.teabaike.retrofit.MainHttpService;
 import com.estyle.teabaike.retrofit.SearchHttpService;
-import com.estyle.teabaike.constant.Url;
 
 import java.util.List;
 
@@ -67,13 +68,13 @@ public class RetrofitManager {
     }
 
     // 详情页数据
-    public Observable<ContentBean.DataBean> loadContentData(long id) {
+    public Observable<ContentDataBean> loadContentData(long id) {
         return retrofit
                 .create(ContentHttpService.class)
                 .getObservable(id).subscribeOn(Schedulers.io())
-                .map(new Func1<ContentBean, ContentBean.DataBean>() {
+                .map(new Func1<ContentBean, ContentDataBean>() {
                     @Override
-                    public ContentBean.DataBean call(ContentBean contentBean) {
+                    public ContentDataBean call(ContentBean contentBean) {
                         return contentBean.getData();
                     }
                 })

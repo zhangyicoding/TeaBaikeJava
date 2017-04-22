@@ -2,9 +2,8 @@ package com.estyle.teabaike.manager;
 
 import android.content.Context;
 
-import com.estyle.teabaike.bean.CollectionBean;
-import com.estyle.teabaike.bean.CollectionBeanDao;
-import com.estyle.teabaike.bean.ContentBean;
+import com.estyle.teabaike.bean.ContentDataBean;
+import com.estyle.teabaike.bean.ContentDataBeanDao;
 import com.estyle.teabaike.bean.DaoMaster;
 import com.estyle.teabaike.bean.DaoSession;
 import com.estyle.teabaike.bean.TempCollectionBean;
@@ -28,31 +27,53 @@ public class GreenDaoManager {
     }
 
     // 收藏文章
-    public void collectData(ContentBean.DataBean data) {
-        CollectionBeanDao collectionDao = daoSession.getCollectionBeanDao();
-        Query<CollectionBean> query = collectionDao.queryBuilder()
-                .where(CollectionBeanDao.Properties.Id.eq(data.getId()))
+//    public void collectData(ContentDataBean data) {
+//        CollectionBeanDao collectionDao = daoSession.getCollectionBeanDao();
+//        Query<CollectionBean> query = collectionDao.queryBuilder()
+//                .where(CollectionBeanDao.Properties.Id.eq(data.getId()))
+//                .build();
+//        if (query.unique() == null) {
+//            CollectionBean collection = new CollectionBean(Long.parseLong(data.getId()),
+//                    System.currentTimeMillis(),
+//                    data.getTitle(),
+//                    data.getSource(),
+//                    data.getCreate_time(),
+//                    data.getAuthor());
+//            collectionDao.insert(collection);
+//        }
+//    }
+
+    // 收藏文章
+    public void collectData(ContentDataBean data) {
+        ContentDataBeanDao dao = daoSession.getContentDataBeanDao();
+        Query<ContentDataBean> query = dao.queryBuilder()
+                .where(ContentDataBeanDao.Properties.Id.eq(data.getId()))
                 .build();
         if (query.unique() == null) {
-            CollectionBean collection = new CollectionBean(Long.parseLong(data.getId()),
-                    System.currentTimeMillis(),
-                    data.getTitle(),
-                    data.getSource(),
-                    data.getCreate_time(),
-                    data.getAuthor());
-            collectionDao.insert(collection);
+            data.setCurrentTimeMillis(System.currentTimeMillis());
+            dao.insert(data);
         }
     }
 
     // 查询收藏的全部文章
-    public List<CollectionBean> queryCollectionDatas() {
+    public List<ContentDataBean> queryCollectionDatas() {
         return daoSession
-                .getCollectionBeanDao()
+                .getContentDataBeanDao()
                 .queryBuilder()
-                .orderDesc(CollectionBeanDao.Properties.CurrentTimeMillis)
+                .orderDesc(ContentDataBeanDao.Properties.CurrentTimeMillis)
                 .build()
                 .list();
     }
+
+//    // 通过id查询收藏的文章
+//    public CollectionBean queryCollectionDataById(long id) {
+//        return daoSession
+//                .getCollectionBeanDao()
+//                .queryBuilder()
+//                .where(CollectionBeanDao.Properties.Id.eq(id))
+//                .build()
+//                .unique();
+//    }
 
     // 删除收藏的文章
     public void deleteCollectionData(List<TempCollectionBean> tempList) {

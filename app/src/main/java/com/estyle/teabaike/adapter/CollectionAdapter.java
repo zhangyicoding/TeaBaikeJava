@@ -10,7 +10,7 @@ import android.widget.CompoundButton;
 
 import com.estyle.teabaike.R;
 import com.estyle.teabaike.application.TeaBaikeApplication;
-import com.estyle.teabaike.bean.CollectionBean;
+import com.estyle.teabaike.bean.ContentDataBean;
 import com.estyle.teabaike.bean.TempCollectionBean;
 import com.estyle.teabaike.databinding.ItemCollectionBinding;
 import com.estyle.teabaike.manager.GreenDaoManager;
@@ -25,7 +25,7 @@ import javax.inject.Inject;
 public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.ViewHolder> implements View.OnClickListener, View.OnLongClickListener {
 
     private Context context;
-    private List<CollectionBean> datas;
+    private List<ContentDataBean> datas;
     private List<Boolean> deleteStateList;
     private List<TempCollectionBean> tempList;
     private View emptyView;
@@ -45,7 +45,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         tempList = new ArrayList<>();
     }
 
-    public void addDatas(List<CollectionBean> datas) {
+    public void addDatas(List<ContentDataBean> datas) {
         this.datas.addAll(datas);
         notifyDataSetChanged();
         for (int i = 0; i < datas.size(); i++) {
@@ -83,7 +83,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         int count = 0;
         for (int i = deleteStateList.size() - 1; i >= 0; i--) {
             if (deleteStateList.get(i)) {
-                tempList.add(new TempCollectionBean(i, datas.get(i)));
+//                tempList.add(new TempCollectionBean(i, datas.get(i)));
                 datas.remove(i);
                 deleteStateList.remove(i);
                 count++;
@@ -96,7 +96,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     public void restoreTempItem() {
         for (int i = tempList.size() - 1; i >= 0; i--) {
             TempCollectionBean tempCollection = tempList.get(i);
-            datas.add(tempCollection.getPosition(), tempCollection.getCollection());
+//            datas.add(tempCollection.getPosition(), tempCollection.getCollection());
             deleteStateList.add(tempCollection.getPosition(), false);
         }
         notifyDataSetChanged();
@@ -131,7 +131,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        CollectionBean collection = datas.get(position);
+        ContentDataBean collection = datas.get(position);
         ItemCollectionBinding binding = holder.getBinding();
         binding.setBean(collection);
 
@@ -155,7 +155,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
     @Override
     public long getItemId(int position) {
-        return datas.get(position).getId();
+        return Long.parseLong(datas.get(position).getId());
     }
 
     @Override

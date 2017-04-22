@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.estyle.teabaike.R;
 import com.estyle.teabaike.application.TeaBaikeApplication;
-import com.estyle.teabaike.bean.ContentBean;
+import com.estyle.teabaike.bean.ContentDataBean;
 import com.estyle.teabaike.databinding.ActivityContentBinding;
 import com.estyle.teabaike.manager.GreenDaoManager;
 import com.estyle.teabaike.manager.RetrofitManager;
@@ -31,7 +31,7 @@ public class ContentActivity extends AppCompatActivity {
 
     private ActivityContentBinding binding;
 
-    private ContentBean.DataBean data;
+    private ContentDataBean data;
     private Subscription subscription;
 
     @Inject
@@ -65,11 +65,11 @@ public class ContentActivity extends AppCompatActivity {
         long id = getIntent().getLongExtra("id", 0);
         boolean isOnline = getIntent().getBooleanExtra("is_online", false);
         subscription = retrofitManager.loadContentData(id)
-                .subscribe(new Action1<ContentBean.DataBean>() {
+                .subscribe(new Action1<ContentDataBean>() {
                     @Override
-                    public void call(ContentBean.DataBean dataBean) {
+                    public void call(ContentDataBean dataBean) {
                         data = dataBean;
-                        binding.setBean(dataBean);
+                        binding.setBean(data);
                     }
                 }, new Action1<Throwable>() {
                     @Override

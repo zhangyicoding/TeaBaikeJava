@@ -5,7 +5,7 @@
 
         <variable
             name="bean"
-            type="com.estyle.teabaike.bean.ContentBean.DataBean" />
+            type="com.estyle.teabaike.bean.ContentDataBean" />
 
     </data>
 

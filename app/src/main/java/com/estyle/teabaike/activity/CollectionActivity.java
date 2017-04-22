@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.estyle.teabaike.R;
 import com.estyle.teabaike.adapter.CollectionAdapter;
 import com.estyle.teabaike.application.TeaBaikeApplication;
-import com.estyle.teabaike.bean.CollectionBean;
+import com.estyle.teabaike.bean.ContentDataBean;
 import com.estyle.teabaike.databinding.ActivityCollectionBinding;
 import com.estyle.teabaike.manager.GreenDaoManager;
 
@@ -69,7 +69,7 @@ public class CollectionActivity extends AppCompatActivity implements
     }
 
     private void initData() {
-        List<CollectionBean> collectionList = greenDaoManager.queryCollectionDatas();
+        List<ContentDataBean> collectionList = greenDaoManager.queryCollectionDatas();
         adapter.addDatas(collectionList);
     }
 
