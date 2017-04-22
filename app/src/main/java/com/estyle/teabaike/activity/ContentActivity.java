@@ -64,21 +64,26 @@ public class ContentActivity extends AppCompatActivity {
     private void initData() {
         long id = getIntent().getLongExtra("id", 0);
         boolean isOnline = getIntent().getBooleanExtra("is_online", false);
-        subscription = retrofitManager.loadContentData(id)
-                .subscribe(new Action1<ContentDataBean>() {
-                    @Override
-                    public void call(ContentDataBean dataBean) {
-                        data = dataBean;
-                        binding.setBean(data);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Toast.makeText(ContentActivity.this,
-                                R.string.fail_connect,
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if (isOnline) {
+            subscription = retrofitManager.loadContentData(id)
+                    .subscribe(new Action1<ContentDataBean>() {
+                        @Override
+                        public void call(ContentDataBean dataBean) {
+                            data = dataBean;
+                            binding.setBean(data);
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            Toast.makeText(ContentActivity.this,
+                                    R.string.fail_connect,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else {
+            data = greenDaoManager.queryCollectionDataById(id);
+            binding.setBean(data);
+        }
     }
 
     @Override

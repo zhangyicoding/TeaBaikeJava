@@ -47,15 +47,15 @@ public class GreenDaoManager {
                 .list();
     }
 
-//    // 通过id查询收藏的文章
-//    public CollectionBean queryCollectionDataById(long id) {
-//        return daoSession
-//                .getCollectionBeanDao()
-//                .queryBuilder()
-//                .where(CollectionBeanDao.Properties.Id.eq(id))
-//                .build()
-//                .unique();
-//    }
+    //    // 通过id查询收藏的文章
+    public ContentDataBean queryCollectionDataById(long id) {
+        return daoSession
+                .getContentDataBeanDao()
+                .queryBuilder()
+                .where(ContentDataBeanDao.Properties.Id.eq(id))
+                .build()
+                .unique();
+    }
 
     // 删除收藏的文章
     public void deleteCollectionData(List<TempCollectionBean> tempList) {

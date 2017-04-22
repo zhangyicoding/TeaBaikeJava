@@ -22,7 +22,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.ViewHolder> implements View.OnClickListener, View.OnLongClickListener {
+public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.ViewHolder> implements
+        View.OnClickListener, View.OnLongClickListener {
 
     private Context context;
     private List<ContentDataBean> datas;
@@ -115,7 +116,10 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ItemCollectionBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_collection, parent, false);
+        ItemCollectionBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
+                R.layout.item_collection,
+                parent,
+                false);
         binding.setAdapter(this);
         View itemView = binding.getRoot();
         ViewHolder holder = new ViewHolder(itemView);

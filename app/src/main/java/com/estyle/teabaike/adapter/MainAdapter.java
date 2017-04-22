@@ -57,7 +57,10 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder;
         if (viewType == headerViewList.size()) {
-            ItemMainBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_main, parent, false);
+            ItemMainBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
+                    R.layout.item_main,
+                    parent,
+                    false);
             View itemView = binding.getRoot();
             initItemViewListener(itemView);
             holder = new ItemViewHolder(itemView);
