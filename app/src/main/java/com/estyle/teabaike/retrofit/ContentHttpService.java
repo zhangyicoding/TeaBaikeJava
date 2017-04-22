@@ -1,4 +1,4 @@
-package com.estyle.teabaike.callback;
+package com.estyle.teabaike.retrofit;
 
 
 import com.estyle.teabaike.bean.ContentBean;

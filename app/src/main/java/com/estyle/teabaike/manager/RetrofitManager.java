@@ -3,10 +3,10 @@ package com.estyle.teabaike.manager;
 import com.estyle.teabaike.bean.ContentBean;
 import com.estyle.teabaike.bean.HeadlineBean;
 import com.estyle.teabaike.bean.MainBean;
-import com.estyle.teabaike.callback.ContentHttpService;
-import com.estyle.teabaike.callback.HeadlineHttpService;
-import com.estyle.teabaike.callback.MainHttpService;
-import com.estyle.teabaike.callback.SearchHttpService;
+import com.estyle.teabaike.retrofit.ContentHttpService;
+import com.estyle.teabaike.retrofit.HeadlineHttpService;
+import com.estyle.teabaike.retrofit.MainHttpService;
+import com.estyle.teabaike.retrofit.SearchHttpService;
 import com.estyle.teabaike.constant.Url;
 
 import java.util.List;
