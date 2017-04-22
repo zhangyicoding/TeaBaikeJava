@@ -10,21 +10,21 @@ import android.view.MenuItem;
 
 import com.estyle.teabaike.R;
 import com.estyle.teabaike.adapter.MainAdapter;
-import com.estyle.teabaike.application.MyApplication;
+import com.estyle.teabaike.application.TeaBaikeApplication;
 import com.estyle.teabaike.bean.MainBean;
-import com.estyle.teabaike.callback.SearchHttpService;
 import com.estyle.teabaike.databinding.ActivitySearchBinding;
+import com.estyle.teabaike.manager.RetrofitManager;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 
 import java.util.List;
 
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import javax.inject.Inject;
 
-public class SearchActivity extends AppCompatActivity implements MainAdapter.OnItemClickListener, PullToRefreshBase.OnRefreshListener2 {
+import rx.Subscription;
+import rx.functions.Action1;
+
+public class SearchActivity extends AppCompatActivity implements
+        MainAdapter.OnItemClickListener, PullToRefreshBase.OnRefreshListener2 {
 
     private ActivitySearchBinding binding;
 
@@ -32,8 +32,10 @@ public class SearchActivity extends AppCompatActivity implements MainAdapter.OnI
 
     private int page = 1;
     private String keyword;
-    private boolean isRefresh;
     private Subscription subscription;
+
+    @Inject
+    RetrofitManager retrofitManager;
 
     public static void startActivity(Context context, String keyword) {
         Intent intent = new Intent(context, SearchActivity.class);
@@ -44,6 +46,7 @@ public class SearchActivity extends AppCompatActivity implements MainAdapter.OnI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TeaBaikeApplication.getApplication().getTeaBaikeComponent().inject(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
 
         initView();
@@ -72,41 +75,28 @@ public class SearchActivity extends AppCompatActivity implements MainAdapter.OnI
     }
 
     // 加载网络数据
-    private void loadData(int page, boolean isRefresh) {
-        this.isRefresh = isRefresh;
-        subscription = ((MyApplication) getApplication()).getRetrofit()
-                .create(SearchHttpService.class)
-                .getObservable(keyword, page)
-                .subscribeOn(Schedulers.io())
-                .map(func)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onNext);
+    private void loadData(int page, final boolean isRefresh) {
+        subscription = retrofitManager.loadSearchData(keyword, page)
+                .subscribe(new Action1<List<MainBean.DataBean>>() {
+                    @Override
+                    public void call(List<MainBean.DataBean> dataBean) {
+                        if (isRefresh) {
+                            adapter.refreshDatas(dataBean);
+                        } else {
+                            adapter.addDatas(dataBean);
+                        }
+                        binding.searchPullToRefresh.onRefreshComplete();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                    }
+                });
     }
-
-    // Databinding和Java8 Lambda冲突
-    private Func1<MainBean, List<MainBean.DataBean>> func = new Func1<MainBean, List<MainBean.DataBean>>() {
-        @Override
-        public List<MainBean.DataBean> call(MainBean mainBean) {
-            return mainBean.getData();
-        }
-    };
-
-    // Databinding和Java8 Lambda冲突
-    private Action1<List<MainBean.DataBean>> onNext = new Action1<List<MainBean.DataBean>>() {
-        @Override
-        public void call(List<MainBean.DataBean> datas) {
-            if (isRefresh) {
-                adapter.refreshDatas(datas);
-            } else {
-                adapter.addDatas(datas);
-            }
-            binding.searchPullToRefresh.onRefreshComplete();
-        }
-    };
 
     @Override
     public void onItemClick(int position) {
-        ContentActivity.startActivity(this, adapter.getItemId(position));
+        ContentActivity.startActivity(this, adapter.getItemId(position), true);
     }
 
     @Override

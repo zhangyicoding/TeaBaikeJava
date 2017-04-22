@@ -12,23 +12,18 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.estyle.teabaike.R;
-import com.estyle.teabaike.application.MyApplication;
-import com.estyle.teabaike.bean.CollectionBean;
-import com.estyle.teabaike.bean.CollectionBeanDao;
+import com.estyle.teabaike.application.TeaBaikeApplication;
 import com.estyle.teabaike.bean.ContentBean;
-import com.estyle.teabaike.callback.ContentHttpService;
 import com.estyle.teabaike.databinding.ActivityContentBinding;
-
-import org.greenrobot.greendao.query.Query;
+import com.estyle.teabaike.manager.GreenDaoManager;
+import com.estyle.teabaike.manager.RetrofitManager;
 
 import java.lang.reflect.Method;
 
-import rx.Observable;
+import javax.inject.Inject;
+
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 public class ContentActivity extends AppCompatActivity {
 
@@ -39,15 +34,22 @@ public class ContentActivity extends AppCompatActivity {
     private ContentBean.DataBean data;
     private Subscription subscription;
 
-    public static void startActivity(Context context, long id) {
+    @Inject
+    RetrofitManager retrofitManager;
+    @Inject
+    GreenDaoManager greenDaoManager;
+
+    public static void startActivity(Context context, long id, boolean isOnline) {
         Intent intent = new Intent(context, ContentActivity.class);
         intent.putExtra("id", id);
+        intent.putExtra("is_online", isOnline);
         context.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TeaBaikeApplication.getApplication().getTeaBaikeComponent().inject(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_content);
 
         initView();
@@ -61,40 +63,23 @@ public class ContentActivity extends AppCompatActivity {
 
     private void initData() {
         long id = getIntent().getLongExtra("id", 0);
-        subscription = ((MyApplication) getApplication())
-                .getRetrofit()
-                .create(ContentHttpService.class)
-                .getObservable(id)
-                .subscribeOn(Schedulers.io())
-                .flatMap(func)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onNext, onError);
+        boolean isOnline = getIntent().getBooleanExtra("is_online", false);
+        subscription = retrofitManager.loadContentData(id)
+                .subscribe(new Action1<ContentBean.DataBean>() {
+                    @Override
+                    public void call(ContentBean.DataBean dataBean) {
+                        data = dataBean;
+                        binding.setBean(dataBean);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Toast.makeText(ContentActivity.this,
+                                R.string.fail_connect,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
-
-    // Databinding和Java8 Lambda冲突
-    private Func1<ContentBean, Observable<ContentBean.DataBean>> func = new Func1<ContentBean, Observable<ContentBean.DataBean>>() {
-        @Override
-        public Observable<ContentBean.DataBean> call(ContentBean contentBean) {
-            return Observable.just(contentBean.getData());
-        }
-    };
-
-    // Databinding和Java8 Lambda冲突
-    private Action1<ContentBean.DataBean> onNext = new Action1<ContentBean.DataBean>() {
-        @Override
-        public void call(ContentBean.DataBean dataBean) {
-            data = dataBean;
-            binding.setBean(dataBean);
-        }
-    };
-
-    // Databinding和Java8 Lambda冲突
-    private Action1<Throwable> onError = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            Toast.makeText(ContentActivity.this, R.string.fail_connect, Toast.LENGTH_SHORT).show();
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -131,26 +116,15 @@ public class ContentActivity extends AppCompatActivity {
 
     // 分享文章
     private void share() {
-        showTip(R.string.share_successful);
+        if (data != null) {
+            showTip(R.string.share_successful);
+        }
     }
 
     // 收藏文章
     private void collect() {
         if (data != null) {
-            CollectionBeanDao collectionDao = ((MyApplication) getApplication()).getDaoSession()
-                    .getCollectionBeanDao();
-            Query<CollectionBean> query = collectionDao.queryBuilder()
-                    .where(CollectionBeanDao.Properties.Id.eq(data.getId()))
-                    .build();
-            if (query.unique() == null) {
-                CollectionBean collection = new CollectionBean(Long.parseLong(data.getId())
-                        , System.currentTimeMillis()
-                        , data.getTitle()
-                        , data.getSource()
-                        , data.getCreate_time()
-                        , data.getAuthor());
-                collectionDao.insert(collection);
-            }
+            greenDaoManager.collectData(data);
             showTip(R.string.collect_successful);
         }
     }

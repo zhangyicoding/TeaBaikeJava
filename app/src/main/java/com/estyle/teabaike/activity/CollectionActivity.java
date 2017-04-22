@@ -13,16 +13,18 @@ import android.widget.TextView;
 
 import com.estyle.teabaike.R;
 import com.estyle.teabaike.adapter.CollectionAdapter;
-import com.estyle.teabaike.application.MyApplication;
+import com.estyle.teabaike.application.TeaBaikeApplication;
 import com.estyle.teabaike.bean.CollectionBean;
-import com.estyle.teabaike.bean.CollectionBeanDao;
 import com.estyle.teabaike.databinding.ActivityCollectionBinding;
+import com.estyle.teabaike.manager.GreenDaoManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 public class CollectionActivity extends AppCompatActivity implements
         CollectionAdapter.OnItemClickListener, CollectionAdapter.OnItemLongClickListener {
@@ -36,6 +38,9 @@ public class CollectionActivity extends AppCompatActivity implements
 
     private Snackbar snackbar;
 
+    @Inject
+    GreenDaoManager greenDaoManager;
+
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, CollectionActivity.class);
         context.startActivity(intent);
@@ -44,6 +49,7 @@ public class CollectionActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TeaBaikeApplication.getApplication().getTeaBaikeComponent().inject(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_collection);
         EventBus.getDefault().register(this);
 
@@ -63,12 +69,7 @@ public class CollectionActivity extends AppCompatActivity implements
     }
 
     private void initData() {
-        List<CollectionBean> collectionList = ((MyApplication) getApplication()).getDaoSession()
-                .getCollectionBeanDao()
-                .queryBuilder()
-                .orderDesc(CollectionBeanDao.Properties.CurrentTimeMillis)
-                .build()
-                .list();
+        List<CollectionBean> collectionList = greenDaoManager.queryCollectionDatas();
         adapter.addDatas(collectionList);
     }
 
@@ -89,7 +90,7 @@ public class CollectionActivity extends AppCompatActivity implements
     @Override
     public void onItemClick(int position) {
         if (!isDeleteEnabled) {
-            ContentActivity.startActivity(this, adapter.getItemId(position));
+            ContentActivity.startActivity(this, adapter.getItemId(position), false);
         } else {
             adapter.invertItemStateAtPosition(position);
         }
@@ -118,8 +119,8 @@ public class CollectionActivity extends AppCompatActivity implements
 
     // 删除选中数据
     public void deleteItem(View view) {
-        String tip = String.format(Locale.getDefault(), getString(R.string.delete_successful),
-                adapter.deleteCheckedItem());
+        int deleteCount = adapter.deleteCheckedItem();
+        String tip = String.format(Locale.getDefault(), getString(R.string.delete_successful), deleteCount);
         setDeleteEnabled(false);
         if (snackbar == null) {
             snackbar = Snackbar.make(binding.getRoot(), tip, Snackbar.LENGTH_LONG)
@@ -168,7 +169,7 @@ public class CollectionActivity extends AppCompatActivity implements
         @Override
         public void onDismissed(Snackbar transientBottomBar, int event) {
             super.onDismissed(transientBottomBar, event);
-            adapter.deleteDataInDB();
+            adapter.deleteData();
         }
     };
 

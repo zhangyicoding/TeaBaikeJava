@@ -1,6 +1,5 @@
 package com.estyle.teabaike.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
@@ -10,16 +9,18 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.estyle.teabaike.R;
-import com.estyle.teabaike.application.MyApplication;
+import com.estyle.teabaike.application.TeaBaikeApplication;
 import com.estyle.teabaike.bean.CollectionBean;
-import com.estyle.teabaike.bean.CollectionBeanDao;
 import com.estyle.teabaike.bean.TempCollectionBean;
 import com.estyle.teabaike.databinding.ItemCollectionBinding;
+import com.estyle.teabaike.manager.GreenDaoManager;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.ViewHolder> implements View.OnClickListener, View.OnLongClickListener {
 
@@ -33,19 +34,15 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
 
-    private CollectionBeanDao collectionDao;
+    @Inject
+    GreenDaoManager greenDaoManager;
 
     public CollectionAdapter(Context context) {
         this.context = context;
+        TeaBaikeApplication.getApplication().getTeaBaikeComponent().inject(this);
         datas = new ArrayList<>();
         deleteStateList = new ArrayList<>();
         tempList = new ArrayList<>();
-        initDB();
-    }
-
-    private void initDB() {
-        collectionDao = ((MyApplication) ((Activity) context).getApplication()).getDaoSession()
-                .getCollectionBeanDao();
     }
 
     public void addDatas(List<CollectionBean> datas) {
@@ -107,11 +104,8 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     }
 
     // 删除数据库中的数据
-    public void deleteDataInDB() {
-        for (TempCollectionBean tempCollection : tempList) {
-            collectionDao.delete(tempCollection.getCollection());
-        }
-        tempList.clear();
+    public void deleteData() {
+        greenDaoManager.deleteCollectionData(tempList);
     }
 
     // 设置空视图

@@ -1,6 +1,5 @@
 package com.estyle.teabaike.widget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
@@ -10,20 +9,20 @@ import android.widget.FrameLayout;
 
 import com.estyle.teabaike.R;
 import com.estyle.teabaike.adapter.HeadlinePagerAdapter;
-import com.estyle.teabaike.application.MyApplication;
+import com.estyle.teabaike.application.TeaBaikeApplication;
 import com.estyle.teabaike.bean.HeadlineBean;
-import com.estyle.teabaike.callback.HeadlineHttpService;
 import com.estyle.teabaike.databinding.ViewHeadlineHeaderBinding;
+import com.estyle.teabaike.manager.RetrofitManager;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageChangeListener {
 
@@ -35,56 +34,38 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
     private Subscription httpSubscription;
     private Subscription intervalSubscription;
 
+    @Inject
+    RetrofitManager retrofitManager;
+
     public HeadlineHeaderView(@NonNull Context context) {
         super(context);
+        TeaBaikeApplication.getApplication().getTeaBaikeComponent().inject(this);
         binding = DataBindingUtil.inflate(LayoutInflater.from(context),
                 R.layout.view_headline_header, this, true);
     }
 
     public void loadData() {
-        httpSubscription = ((MyApplication) ((Activity) getContext())
-                .getApplication())
-                .getRetrofit()
-                .create(HeadlineHttpService.class)
-                .getObservable()
-                .subscribeOn(Schedulers.io())
-                .map(func)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onNext, onError);
+        httpSubscription = retrofitManager.loadHeadlineData()
+                .subscribe(new Action1<List<HeadlineBean.DataBean>>() {
+                    @Override
+                    public void call(List<HeadlineBean.DataBean> dataBean) {
+                        datas = dataBean;
+                        binding.pointView.setPointCount(datas.size());
+
+                        binding.headlineTextView.setText(datas.get(0).getTitle());
+
+                        HeadlinePagerAdapter adapter = new HeadlinePagerAdapter(getContext(), datas);
+                        binding.headlineViewPager.setAdapter(adapter);
+                        binding.headlineViewPager.addOnPageChangeListener(HeadlineHeaderView.this);
+                        startAutoPlay();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
     }
-
-    // Databinding和Java8 Lambda冲突
-    private Func1<HeadlineBean, List<HeadlineBean.DataBean>> func = new Func1<HeadlineBean,
-            List<HeadlineBean.DataBean>>() {
-        @Override
-        public List<HeadlineBean.DataBean> call(HeadlineBean headlineBean) {
-            return headlineBean.getData();
-        }
-    };
-
-    // Databinding和Java8 Lambda冲突
-    private Action1<List<HeadlineBean.DataBean>> onNext =
-            new Action1<List<HeadlineBean.DataBean>>() {
-                @Override
-                public void call(List<HeadlineBean.DataBean> datas) {
-                    HeadlineHeaderView.this.datas = datas;
-                    binding.pointView.setPointCount(datas.size());
-
-                    binding.headlineTextView.setText(datas.get(0).getTitle());
-
-                    HeadlinePagerAdapter adapter = new HeadlinePagerAdapter(getContext(), datas);
-                    binding.headlineViewPager.setAdapter(adapter);
-                    binding.headlineViewPager.addOnPageChangeListener(HeadlineHeaderView.this);
-                    startAutoPlay();
-                }
-            };
-
-    // Databinding和Java8 Lambda冲突
-    private Action1<Throwable> onError = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-        }
-    };
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

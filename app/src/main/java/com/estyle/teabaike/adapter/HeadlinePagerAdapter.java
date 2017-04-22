@@ -70,6 +70,6 @@ public class HeadlinePagerAdapter extends PagerAdapter implements View.OnClickLi
             String link = data.getLink();
             id = link.substring(link.lastIndexOf("/") + 1);
         }
-        ContentActivity.startActivity(context, Long.parseLong(id));
+        ContentActivity.startActivity(context, Long.parseLong(id), true);
     }
 }
