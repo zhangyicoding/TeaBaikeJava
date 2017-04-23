@@ -54,7 +54,8 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
 
                         binding.headlineTextView.setText(datas.get(0).getTitle());
 
-                        HeadlinePagerAdapter adapter = new HeadlinePagerAdapter(getContext(), datas);
+                        HeadlinePagerAdapter adapter = new HeadlinePagerAdapter(getContext(),
+                                datas);
                         binding.headlineViewPager.setAdapter(adapter);
                         binding.headlineViewPager.addOnPageChangeListener(HeadlineHeaderView.this);
                         startAutoPlay();
