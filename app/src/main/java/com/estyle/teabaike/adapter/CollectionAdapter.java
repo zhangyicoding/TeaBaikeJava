@@ -42,16 +42,15 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         this.context = context;
         TeaBaikeApplication.getApplication().getTeaBaikeComponent().inject(this);
         datas = new ArrayList<>();
-        deleteStateList = new ArrayList<>();
-        tempList = new ArrayList<>();
     }
 
     public void addDatas(List<ContentDataBean> datas) {
         this.datas.addAll(datas);
-        notifyDataSetChanged();
-        for (int i = 0; i < datas.size(); i++) {
+        deleteStateList = new ArrayList<>();
+        for (int i = 0; i < this.datas.size(); i++) {
             deleteStateList.add(false);
         }
+        notifyDataSetChanged();
     }
 
     // CheckBox可见
@@ -81,6 +80,9 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
     // 删除选中数据
     public int deleteCheckedItem() {
+        if (tempList == null) {
+            tempList = new ArrayList<>();
+        }
         int count = 0;
         for (int i = deleteStateList.size() - 1; i >= 0; i--) {
             if (deleteStateList.get(i)) {
