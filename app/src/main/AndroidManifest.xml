@@ -28,6 +28,11 @@
         <activity android:name=".activity.CopyrightActivity" />
         <activity android:name=".activity.SuggestionActivity" />
         <activity android:name=".activity.SearchActivity" />
+
+        <meta-data
+            android:name="com.estyle.teabaike.glide.TeaBaikeGlideModule"
+            android:value="GlideModule" />
+
     </application>
 
 </manifest>
