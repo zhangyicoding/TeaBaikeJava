@@ -76,7 +76,7 @@ public class MainFragment extends Fragment implements
                 adapter.addHeaderView(headerView);
             }
             View footerView = LayoutInflater.from(getContext()).inflate(R.layout.view_footer, null);
-//            adapter.addFooterView(footerView);
+            adapter.addFooterView(footerView);
 
             binding.mainPullToRefresh.setMode(PullToRefreshBase.Mode.BOTH);
             binding.mainPullToRefresh.setOnRefreshListener(this);

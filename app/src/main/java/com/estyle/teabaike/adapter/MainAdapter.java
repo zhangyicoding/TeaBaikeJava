@@ -10,12 +10,13 @@ import android.view.ViewGroup;
 import com.estyle.teabaike.R;
 import com.estyle.teabaike.bean.MainBean;
 import com.estyle.teabaike.databinding.ItemMainBinding;
-import com.estyle.teabaike.util.EstyleLog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainAdapter extends RecyclerView.Adapter implements View.OnClickListener {
+
+    private static final int TYPE_ITEM = -1;
 
     private Context context;
     private List<MainBean.DataBean> datas;
@@ -72,13 +73,7 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder = null;
-        if (viewType < headerCount) {
-            View headerView = headerList.get(viewType);
-            holder = new HeaderViewHolder(headerView);
-        } else if (viewType > headerCount) {
-            View footerView = footerList.get(viewType - headerCount - datas.size());
-            holder = new FooterViewHolder(footerView);
-        } else {
+        if (viewType == TYPE_ITEM) {
             ItemMainBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
                     R.layout.item_main,
                     parent,
@@ -87,6 +82,14 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
             initItemViewListener(itemView);
             holder = new ItemViewHolder(itemView);
             ((ItemViewHolder) holder).setBinding(binding);
+        } else {
+            if (viewType < headerCount) {
+                View headerView = headerList.get(viewType);
+                holder = new HeaderViewHolder(headerView);
+            } else {
+                View footerView = footerList.get(viewType - headerCount - datas.size());
+                holder = new FooterViewHolder(footerView);
+            }
         }
         return holder;
     }
@@ -100,7 +103,6 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
         if (holder instanceof ItemViewHolder) {
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             MainBean.DataBean data = datas.get(position - headerCount);
-            EstyleLog.e("size", datas.size());
             itemViewHolder.getBinding().setBean(data);
         }
     }
@@ -132,11 +134,11 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
         }
 
         if (footerCount > 0) {
-            if (position > (footerCount + datas.size()) - 1) {
+            if (position > (headerCount + datas.size()) - 1) {
                 return position;
             }
         }
-        return headerCount;
+        return TYPE_ITEM;
     }
 
     @Override
