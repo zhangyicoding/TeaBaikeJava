@@ -17,6 +17,7 @@ import com.estyle.teabaike.bean.MainBean;
 import com.estyle.teabaike.databinding.FragmentMainBinding;
 import com.estyle.teabaike.manager.RetrofitManager;
 import com.estyle.teabaike.widget.HeadlineHeaderView;
+import com.estyle.teabaike.widget.FooterView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 
 import java.util.List;
@@ -75,7 +76,7 @@ public class MainFragment extends Fragment implements
                 headerView = new HeadlineHeaderView(getContext());
                 adapter.addHeaderView(headerView);
             }
-            View footerView = LayoutInflater.from(getContext()).inflate(R.layout.view_footer, null);
+            FooterView footerView = new FooterView(getContext());
             adapter.addFooterView(footerView);
 
             binding.mainPullToRefresh.setMode(PullToRefreshBase.Mode.BOTH);

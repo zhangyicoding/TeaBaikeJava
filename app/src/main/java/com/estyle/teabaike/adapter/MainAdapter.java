@@ -110,11 +110,14 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
     @Override
     public int getItemCount() {
         int itemCount = headerCount + datas.size() + footerCount;
-        if (emptyView != null) {
-            if (itemCount > footerCount) {
-                emptyView.setVisibility(View.INVISIBLE);
-            } else {
-                emptyView.setVisibility(View.VISIBLE);
+        if (datas.size() > 0) {
+            if (emptyView != null) {
+                emptyView.setVisibility(View.GONE);
+            }
+            if (footerCount > 0) {
+                for (View footerView : footerList) {
+                    footerView.setVisibility(View.VISIBLE);
+                }
             }
         }
         return itemCount;
