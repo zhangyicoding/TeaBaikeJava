@@ -41,14 +41,15 @@ public class RetrofitManager {
         } else {
             observable = service.getMainObservable(type, page);
         }
-        return observable.subscribeOn(Schedulers.io())
+        return observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<MainBean, List<MainBean.DataBean>>() {
                     @Override
                     public List<MainBean.DataBean> call(MainBean mainBean) {
                         return mainBean.getData();
                     }
-                })
-                .observeOn(AndroidSchedulers.mainThread());
+                });
     }
 
 
@@ -58,27 +59,28 @@ public class RetrofitManager {
                 .create(HeadlineHttpService.class)
                 .getObservable()
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<HeadlineBean, List<HeadlineBean.DataBean>>() {
                     @Override
                     public List<HeadlineBean.DataBean> call(HeadlineBean headlineBean) {
                         return headlineBean.getData();
                     }
-                })
-                .observeOn(AndroidSchedulers.mainThread());
+                });
     }
 
     // 详情页数据
     public Observable<ContentDataBean> loadContentData(long id) {
         return retrofit
                 .create(ContentHttpService.class)
-                .getObservable(id).subscribeOn(Schedulers.io())
+                .getObservable(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<ContentBean, ContentDataBean>() {
                     @Override
                     public ContentDataBean call(ContentBean contentBean) {
                         return contentBean.getData();
                     }
-                })
-                .observeOn(AndroidSchedulers.mainThread());
+                });
     }
 
     // 搜索页数据
@@ -87,13 +89,13 @@ public class RetrofitManager {
                 .create(SearchHttpService.class)
                 .getObservable(keyword, page)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<MainBean, List<MainBean.DataBean>>() {
                     @Override
                     public List<MainBean.DataBean> call(MainBean mainBean) {
                         return mainBean.getData();
                     }
-                })
-                .observeOn(AndroidSchedulers.mainThread());
+                });
     }
 
 }
