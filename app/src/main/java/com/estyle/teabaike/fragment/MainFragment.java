@@ -4,7 +4,7 @@ package com.estyle.teabaike.fragment;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +16,9 @@ import com.estyle.teabaike.application.TeaBaikeApplication;
 import com.estyle.teabaike.bean.MainBean;
 import com.estyle.teabaike.databinding.FragmentMainBinding;
 import com.estyle.teabaike.manager.RetrofitManager;
-import com.estyle.teabaike.widget.HeadlineHeaderView;
 import com.estyle.teabaike.widget.FooterView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.estyle.teabaike.widget.HeadlineHeaderView;
+import com.estyle.teabaike.widget.RecyclerView;
 
 import java.util.List;
 
@@ -28,7 +28,9 @@ import rx.Subscription;
 import rx.functions.Action1;
 
 public class MainFragment extends Fragment implements
-        MainAdapter.OnItemClickListener, PullToRefreshBase.OnRefreshListener2 {
+        MainAdapter.OnItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener,
+        RecyclerView.OnLoadMoreListener {
 
     private FragmentMainBinding binding;
 
@@ -79,11 +81,11 @@ public class MainFragment extends Fragment implements
             FooterView footerView = new FooterView(getContext());
             adapter.addFooterView(footerView);
 
-            binding.mainPullToRefresh.setMode(PullToRefreshBase.Mode.BOTH);
-            binding.mainPullToRefresh.setOnRefreshListener(this);
+            binding.swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+            binding.swipeRefreshLayout.setOnRefreshListener(this);
 
-            RecyclerView mainRecyclerView = binding.mainPullToRefresh.getRefreshableView();
-            mainRecyclerView.setAdapter(adapter);
+            binding.recyclerView.setOnLoadMoreListener(this);
+            binding.recyclerView.setAdapter(adapter);
         }
         return rootView;
     }
@@ -101,18 +103,19 @@ public class MainFragment extends Fragment implements
     }
 
     @Override
-    public void onPullDownToRefresh(PullToRefreshBase refreshView) {
+    public void onItemClick(int position) {
+        ContentActivity.startActivity(getContext(), adapter.getItemId(position), true);
+    }
+
+    @Override
+    public void onRefresh() {
         loadData(page = 1, true);
     }
 
-    @Override
-    public void onPullUpToRefresh(PullToRefreshBase refreshView) {
-        loadData(++page, false);
-    }
 
     @Override
-    public void onItemClick(int position) {
-        ContentActivity.startActivity(getContext(), adapter.getItemId(position), true);
+    public void onLoadMore() {
+        loadData(++page, false);
     }
 
     // 加载网络数据
@@ -123,15 +126,21 @@ public class MainFragment extends Fragment implements
                     public void call(List<MainBean.DataBean> datas) {
                         if (isRefresh) {
                             adapter.refreshDatas(datas);
+                            binding.swipeRefreshLayout.setRefreshing(false);
                         } else {
                             adapter.addDatas(datas);
+                            binding.recyclerView.isLoading = false;
                         }
-                        binding.mainPullToRefresh.onRefreshComplete();
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         binding.emptyView.setText(R.string.fail_connect);
+                        if (isRefresh) {
+                            binding.swipeRefreshLayout.setRefreshing(false);
+                        } else {
+                            binding.recyclerView.isLoading = false;
+                        }
                     }
                 });
     }
@@ -139,9 +148,11 @@ public class MainFragment extends Fragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        binding.recyclerView.removeOnScrollListener();
         if (type == 0) {
             headerView.onDestroy();
         }
         subscription.unsubscribe();
     }
+
 }
