@@ -91,7 +91,7 @@ public class ContentActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_content, menu);
 
         Class clazz = menu.getClass();
-        Method setOptionalIconsVisibleMethod = null;
+        Method setOptionalIconsVisibleMethod;
         try {
             setOptionalIconsVisibleMethod = clazz.getDeclaredMethod("setOptionalIconsVisible"
                     , boolean.class);
