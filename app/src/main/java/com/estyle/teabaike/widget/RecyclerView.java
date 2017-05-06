@@ -36,11 +36,7 @@ public class RecyclerView extends android.support.v7.widget.RecyclerView {
             super.onScrolled(recyclerView, dx, dy);
             int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
             int itemCount = layoutManager.getItemCount();
-            if (lastVisibleItemPosition == itemCount - 1) {
-                isScrollToBottom = true;
-            } else {
-                isScrollToBottom = false;
-            }
+            isScrollToBottom = lastVisibleItemPosition == itemCount - 1;
         }
     };
 
@@ -50,15 +46,13 @@ public class RecyclerView extends android.support.v7.widget.RecyclerView {
 
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
         this.onLoadMoreListener = onLoadMoreListener;
-        addOnScrollListener(onScrollListener);
+        if (onLoadMoreListener != null) {
+            addOnScrollListener(onScrollListener);
+        }
     }
 
-    public OnLoadMoreListener getOnLoadMoreListener() {
-        return onLoadMoreListener;
-    }
-
-    public static interface OnLoadMoreListener {
-        public void onLoadMore();
+    public interface OnLoadMoreListener {
+        void onLoadMore();
     }
 
 }
