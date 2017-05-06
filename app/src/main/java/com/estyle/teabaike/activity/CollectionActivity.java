@@ -16,6 +16,7 @@ import com.estyle.teabaike.adapter.CollectionAdapter;
 import com.estyle.teabaike.application.TeaBaikeApplication;
 import com.estyle.teabaike.bean.ContentDataBean;
 import com.estyle.teabaike.databinding.ActivityCollectionBinding;
+import com.estyle.teabaike.eventbus.CheckAllCollectionsEvent;
 import com.estyle.teabaike.manager.GreenDaoManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -159,8 +160,8 @@ public class CollectionActivity extends AppCompatActivity implements
 
     // 控制全选按钮文字
     @Subscribe
-    public void setCheckAllText(String text) {
-        binding.checkAllTextView.setText(text);
+    public void setCheckAllText(CheckAllCollectionsEvent event) {
+        binding.checkAllTextView.setText(event.getCheckAllText());
     }
 
 

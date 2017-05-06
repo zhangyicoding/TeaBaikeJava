@@ -13,6 +13,7 @@ import com.estyle.teabaike.application.TeaBaikeApplication;
 import com.estyle.teabaike.bean.ContentDataBean;
 import com.estyle.teabaike.bean.TempCollectionBean;
 import com.estyle.teabaike.databinding.ItemCollectionBinding;
+import com.estyle.teabaike.eventbus.CheckAllCollectionsEvent;
 import com.estyle.teabaike.manager.GreenDaoManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -204,9 +205,11 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             }
         }
         if (count == 0) {
-            EventBus.getDefault().post(context.getResources().getString(R.string.check_all));
+            EventBus.getDefault().post(new CheckAllCollectionsEvent(
+                    context.getString(R.string.check_all)));
         } else if (count == deleteStateList.size()) {
-            EventBus.getDefault().post(context.getResources().getString(R.string.uncheck_all));
+            EventBus.getDefault().post(new CheckAllCollectionsEvent(
+                    context.getString(R.string.uncheck_all)));
         }
     }
 
