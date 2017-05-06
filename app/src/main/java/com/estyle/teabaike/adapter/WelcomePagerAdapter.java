@@ -13,16 +13,16 @@ import java.util.List;
 
 public class WelcomePagerAdapter extends PagerAdapter implements View.OnClickListener {
 
-    private int[] imgIds = new int[]{R.drawable.welcome1, R.drawable.welcome2};
     private List<View> viewList;
     private OnButtonClickListener listener;
 
     public WelcomePagerAdapter(Context context) {
         viewList = new ArrayList<>();
+        int[] imgIds = new int[]{R.drawable.welcome1, R.drawable.welcome2};
         View view;
-        for (int i = 0; i < imgIds.length; i++) {
+        for (int imgId : imgIds) {
             view = new View(context);
-            view.setBackgroundResource(imgIds[i]);
+            view.setBackgroundResource(imgId);
             viewList.add(view);
         }
         view = LayoutInflater.from(context).inflate(R.layout.view_welcome3, null);
@@ -63,8 +63,8 @@ public class WelcomePagerAdapter extends PagerAdapter implements View.OnClickLis
                 .setOnClickListener(this);
     }
 
-    public static interface OnButtonClickListener {
-        public void onButtonClick(View v);
+    public interface OnButtonClickListener {
+        void onButtonClick(View v);
     }
 
 }
