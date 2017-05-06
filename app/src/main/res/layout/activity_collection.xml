@@ -42,11 +42,12 @@
                     <TextView
                         android:id="@+id/check_all_text_view"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:gravity="center_vertical"
                         android:onClick="checkAll"
+                        android:paddingRight="@dimen/activity_horizontal_margin"
                         android:text="@string/check_all"
                         android:textColor="@android:color/white"
                         android:visibility="invisible" />
