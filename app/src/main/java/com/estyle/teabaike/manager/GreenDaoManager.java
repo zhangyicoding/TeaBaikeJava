@@ -15,7 +15,7 @@ import java.util.List;
 
 public class GreenDaoManager {
 
-    public static final String DB_NAME = "tea_baike.db";
+    private static final String DB_NAME = "tea_baike.db";
 
     private DaoSession daoSession;
 
