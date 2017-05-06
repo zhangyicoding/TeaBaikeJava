@@ -10,6 +10,6 @@ import rx.Observable;
 public interface HeadlineHttpService {
 
     @GET(Url.HEADLINE_HEADER_URL)
-    public Observable<HeadlineBean> getObservable();
+    Observable<HeadlineBean> getObservable();
 
 }

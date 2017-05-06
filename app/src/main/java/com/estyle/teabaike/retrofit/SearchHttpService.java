@@ -11,6 +11,6 @@ import rx.Observable;
 public interface SearchHttpService {
 
     @GET(Url.SEARCH_URL)
-    public Observable<MainBean> getObservable(@Query(Url.SEARCH) String keyword, @Query(Url.PAGE) int page);
+    Observable<MainBean> getObservable(@Query(Url.SEARCH) String keyword, @Query(Url.PAGE) int page);
 
 }

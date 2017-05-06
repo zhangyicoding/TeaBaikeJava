@@ -11,6 +11,6 @@ import rx.Observable;
 public interface ContentHttpService {
 
     @GET(Url.CONTENT_URL)
-    public Observable<ContentBean> getObservable(@Query(Url.ID) long id);
+    Observable<ContentBean> getObservable(@Query(Url.ID) long id);
 
 }
