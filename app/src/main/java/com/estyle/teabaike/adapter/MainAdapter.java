@@ -72,7 +72,7 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder holder = null;
+        RecyclerView.ViewHolder holder;
         if (viewType == TYPE_ITEM) {
             ItemMainBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
                     R.layout.item_main,
@@ -159,7 +159,7 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        public HeaderViewHolder(View itemView) {
+        private HeaderViewHolder(View itemView) {
             super(itemView);
         }
     }
@@ -168,7 +168,7 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
 
         private ItemMainBinding binding;
 
-        public ItemViewHolder(View itemView) {
+        private ItemViewHolder(View itemView) {
             super(itemView);
         }
 
@@ -183,13 +183,13 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
 
     private static class FooterViewHolder extends RecyclerView.ViewHolder {
 
-        public FooterViewHolder(View itemView) {
+        private FooterViewHolder(View itemView) {
             super(itemView);
         }
     }
 
-    public static interface OnItemClickListener {
-        public void onItemClick(int position);
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {

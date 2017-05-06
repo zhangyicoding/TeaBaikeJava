@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.estyle.teabaike.R;
 
-public class MyBindingAdapter {
+public class TeaBaikeBindingAdapter {
 
     @BindingAdapter("imgUrl")// 布局中使用的属性名
     public static void loadImage(ImageView imageView, String url) {

@@ -18,18 +18,18 @@ import dagger.Component;
 @Component(modules = {DataModule.class, TimerModule.class})
 public interface TeaBaikeComponent {
 
-    public void inject(MainFragment fragment);
+    void inject(MainFragment fragment);
 
-    public void inject(HeadlineHeaderView view);
+    void inject(HeadlineHeaderView view);
 
-    public void inject(ContentActivity activity);
+    void inject(ContentActivity activity);
 
-    public void inject(SearchActivity activity);
+    void inject(SearchActivity activity);
 
-    public void inject(CollectionActivity activity);
+    void inject(CollectionActivity activity);
 
-    public void inject(CollectionAdapter adapter);
+    void inject(CollectionAdapter adapter);
 
-    public void inject(SplashActivity activity);
+    void inject(SplashActivity activity);
 
 }

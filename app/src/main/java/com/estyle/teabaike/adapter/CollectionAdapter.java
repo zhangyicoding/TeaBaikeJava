@@ -215,7 +215,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
         private ItemCollectionBinding binding;
 
-        public ViewHolder(View itemView) {
+        private ViewHolder(View itemView) {
             super(itemView);
         }
 
@@ -228,12 +228,12 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         }
     }
 
-    public static interface OnItemClickListener {
-        public void onItemClick(int position);
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
-    public static interface OnItemLongClickListener {
-        public void onItemLongClick(int position);
+    public interface OnItemLongClickListener {
+        void onItemLongClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
