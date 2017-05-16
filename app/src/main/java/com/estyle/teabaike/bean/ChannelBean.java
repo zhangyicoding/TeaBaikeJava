@@ -16,8 +16,16 @@ public class ChannelBean {
         return channel;
     }
 
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
     public Fragment getFragment() {
         return fragment;
+    }
+
+    public void setFragment(Fragment fragment) {
+        this.fragment = fragment;
     }
 
 }
