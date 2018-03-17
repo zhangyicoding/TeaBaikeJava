@@ -29,7 +29,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TeaBaikeApplication.getApplication().getTeaBaikeComponent().inject(this);
-        DataBindingUtil.setContentView(this, R.layout.activity_splash);
 
         subscription = timerManager.splash()
                 .subscribe(new Action1<Boolean>() {

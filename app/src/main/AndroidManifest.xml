@@ -15,7 +15,8 @@
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/StatusBarTransparentTheme" />
-        <activity android:name=".activity.SplashActivity">
+        <activity android:name=".activity.SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
