@@ -27,7 +27,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-public class CollectionActivity extends AppCompatActivity implements
+public class CollectionActivity extends BaseActivity implements
         CollectionAdapter.OnItemClickListener, CollectionAdapter.OnItemLongClickListener {
 
     private ActivityCollectionBinding binding;

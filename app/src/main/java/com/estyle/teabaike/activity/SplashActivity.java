@@ -16,7 +16,7 @@ import rx.functions.Action1;
 import static com.estyle.teabaike.manager.TimerManager.CONFIG_NAME;
 
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
     private Subscription subscription;
 

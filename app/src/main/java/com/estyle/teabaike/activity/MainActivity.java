@@ -13,7 +13,7 @@ import com.estyle.teabaike.R;
 import com.estyle.teabaike.adapter.MainPagerAdapter;
 import com.estyle.teabaike.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private ActivityMainBinding binding;
 

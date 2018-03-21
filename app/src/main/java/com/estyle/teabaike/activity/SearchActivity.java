@@ -24,10 +24,8 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.functions.Action1;
 
-public class SearchActivity extends AppCompatActivity implements
-        MainAdapter.OnItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener,
-        RecyclerView.OnLoadMoreListener {
+public class SearchActivity extends BaseActivity implements MainAdapter.OnItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener, RecyclerView.OnLoadMoreListener {
 
     private ActivitySearchBinding binding;
 

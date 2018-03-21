@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.functions.Action1;
 
-public class ContentActivity extends AppCompatActivity {
+public class ContentActivity extends BaseActivity {
 
     private Snackbar snackbar;
 

@@ -11,7 +11,7 @@ import com.estyle.teabaike.R;
 import com.estyle.teabaike.databinding.ActivityCopyrightBinding;
 
 
-public class CopyrightActivity extends AppCompatActivity {
+public class CopyrightActivity extends BaseActivity {
 
     private ActivityCopyrightBinding binding;
 

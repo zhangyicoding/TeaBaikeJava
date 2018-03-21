@@ -14,7 +14,7 @@ import com.estyle.teabaike.R;
 import com.estyle.teabaike.databinding.ActivitySuggestionBinding;
 
 
-public class SuggestionActivity extends AppCompatActivity implements View.OnFocusChangeListener {
+public class SuggestionActivity extends BaseActivity implements View.OnFocusChangeListener {
 
     private ActivitySuggestionBinding binding;
 

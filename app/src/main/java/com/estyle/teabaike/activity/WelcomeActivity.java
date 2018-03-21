@@ -12,8 +12,8 @@ import com.estyle.teabaike.R;
 import com.estyle.teabaike.adapter.WelcomePagerAdapter;
 import com.estyle.teabaike.databinding.ActivityWelcomeBinding;
 
-public class WelcomeActivity extends AppCompatActivity
-        implements WelcomePagerAdapter.OnButtonClickListener, ViewPager.OnPageChangeListener {
+public class WelcomeActivity extends BaseActivity implements
+        WelcomePagerAdapter.OnButtonClickListener, ViewPager.OnPageChangeListener {
 
     private ActivityWelcomeBinding binding;
 
