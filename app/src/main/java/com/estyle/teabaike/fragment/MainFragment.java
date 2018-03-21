@@ -56,7 +56,7 @@ public class MainFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TeaBaikeApplication.getApplication().getTeaBaikeComponent().inject(this);
+        TeaBaikeApplication.getInstance().getTeaBaikeComponent().inject(this);
         if (getArguments() != null) {
             type = getArguments().getInt("type", 0);
         }

@@ -49,7 +49,7 @@ public class SearchActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TeaBaikeApplication.getApplication().getTeaBaikeComponent().inject(this);
+        TeaBaikeApplication.getInstance().getTeaBaikeComponent().inject(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
 
         initView();

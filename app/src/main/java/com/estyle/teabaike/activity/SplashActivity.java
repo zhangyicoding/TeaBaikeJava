@@ -2,11 +2,9 @@ package com.estyle.teabaike.activity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.estyle.teabaike.R;
 import com.estyle.teabaike.application.TeaBaikeApplication;
 import com.estyle.teabaike.manager.TimerManager;
 
@@ -28,7 +26,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TeaBaikeApplication.getApplication().getTeaBaikeComponent().inject(this);
+        TeaBaikeApplication.getInstance().getTeaBaikeComponent().inject(this);
 
         subscription = timerManager.splash()
                 .subscribe(new Action1<Boolean>() {

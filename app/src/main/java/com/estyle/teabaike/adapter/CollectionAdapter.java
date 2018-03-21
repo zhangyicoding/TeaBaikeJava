@@ -41,7 +41,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
     public CollectionAdapter(Context context) {
         this.context = context;
-        TeaBaikeApplication.getApplication().getTeaBaikeComponent().inject(this);
+        TeaBaikeApplication.getInstance().getTeaBaikeComponent().inject(this);
         datas = new ArrayList<>();
     }
 

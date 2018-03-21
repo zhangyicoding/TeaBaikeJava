@@ -39,7 +39,7 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
 
     public HeadlineHeaderView(@NonNull Context context) {
         super(context);
-        TeaBaikeApplication.getApplication().getTeaBaikeComponent().inject(this);
+        TeaBaikeApplication.getInstance().getTeaBaikeComponent().inject(this);
         binding = DataBindingUtil.inflate(LayoutInflater.from(context),
                 R.layout.view_headline_header, this, true);
     }

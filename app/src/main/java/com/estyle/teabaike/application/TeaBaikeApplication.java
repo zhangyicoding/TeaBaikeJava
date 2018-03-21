@@ -1,39 +1,53 @@
 package com.estyle.teabaike.application;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.estyle.teabaike.dagger.component.DaggerTeaBaikeComponent;
 import com.estyle.teabaike.dagger.component.TeaBaikeComponent;
 import com.estyle.teabaike.dagger.module.DataModule;
 import com.estyle.teabaike.dagger.module.TimerModule;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 public class TeaBaikeApplication extends Application {
 
-    private static TeaBaikeApplication application;
-    private TeaBaikeComponent component;
+    private static TeaBaikeApplication sApplication;
+    private RefWatcher mRefWatcher;
+    private TeaBaikeComponent mComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        application = this;
+        sApplication = this;
+        initLeakCanary();
         initDagger();
     }
 
+    private void initLeakCanary() {
+        if (!LeakCanary.isInAnalyzerProcess(this)) {
+            mRefWatcher = LeakCanary.install(this);
+        }
+    }
+
     private void initDagger() {
-        component = DaggerTeaBaikeComponent
+        mComponent = DaggerTeaBaikeComponent
                 .builder()
                 .dataModule(new DataModule(this))
                 .timerModule(new TimerModule(this))
                 .build();
     }
 
-    public static TeaBaikeApplication getApplication() {
-        return application;
+    public static TeaBaikeApplication getInstance() {
+        return sApplication;
     }
 
     public TeaBaikeComponent getTeaBaikeComponent() {
-        return component;
+        return mComponent;
     }
 
+    public RefWatcher getRefWatcher() {
+        return mRefWatcher;
+    }
 }
