@@ -24,7 +24,7 @@ import com.estyle.teabaike.databinding.FragmentDrawerBinding;
 public class DrawerFragment extends Fragment implements
         NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
-    private EditText keywordEditText;
+    private EditText mKeywordEditText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,7 +35,7 @@ public class DrawerFragment extends Fragment implements
         NavigationView rootView = (NavigationView) binding.getRoot();
         rootView.setNavigationItemSelectedListener(this);
         View headerView = rootView.getHeaderView(0);
-        keywordEditText = (EditText) headerView.findViewById(R.id.keyword_et);
+        mKeywordEditText = (EditText) headerView.findViewById(R.id.keyword_et);
         Button searchBtn = (Button) headerView.findViewById(R.id.search_btn);
         searchBtn.setOnClickListener(this);
         return rootView;
@@ -59,7 +59,7 @@ public class DrawerFragment extends Fragment implements
 
     @Override
     public void onClick(View v) {
-        String keyword = keywordEditText.getText().toString();
+        String keyword = mKeywordEditText.getText().toString();
         if (!TextUtils.isEmpty(keyword)) {
             SearchActivity.startActivity(getContext(), keyword);
         }

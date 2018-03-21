@@ -1,4 +1,4 @@
-package com.estyle.teabaike.eventbus;
+package com.estyle.teabaike.bean.eventbus;
 
 public class CheckAllCollectionsEvent {
 

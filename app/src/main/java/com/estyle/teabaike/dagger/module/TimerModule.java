@@ -12,16 +12,16 @@ import dagger.Provides;
 @Module
 public class TimerModule {
 
-    private Context context;
+    private Context mContext;
 
     public TimerModule(Context context) {
-        this.context = context;
+        this.mContext = context;
     }
 
     @Singleton
     @Provides
     public TimerManager provideTimerManager() {
-        return new TimerManager(context);
+        return new TimerManager(mContext);
     }
 
 }

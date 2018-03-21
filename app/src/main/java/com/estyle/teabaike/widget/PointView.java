@@ -10,7 +10,7 @@ import com.estyle.teabaike.R;
 
 public class PointView extends LinearLayout {
 
-    private int count;
+    private int mCount;
 
     public PointView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -18,7 +18,7 @@ public class PointView extends LinearLayout {
 
     public void setPointCount(int count) {
         if (count > 0) {
-            this.count = count;
+            this.mCount = count;
             int pointSize = getResources().getDimensionPixelSize(R.dimen.point_size);
             LayoutParams params = new LayoutParams(pointSize, pointSize);
             params.setMargins(0, 0, getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin), 0);
@@ -37,13 +37,13 @@ public class PointView extends LinearLayout {
     }
 
     public void setSelectedPosition(int position) {
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < mCount; i++) {
             getChildAt(i).setSelected(i == position);
         }
     }
 
     public int getPointCount() {
-        return count;
+        return mCount;
     }
 
 }

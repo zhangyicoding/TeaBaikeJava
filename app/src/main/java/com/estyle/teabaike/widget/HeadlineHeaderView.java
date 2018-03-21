@@ -26,17 +26,17 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
 
     private ViewHeadlineHeaderBinding binding;
 
-    private int currentPosition;
+    private int mCurrentPosition;
 
-    private List<HeadlineBean.DataBean> datas;
+    private List<HeadlineBean.DataBean> mDatas;
 
     private Disposable mHttpDisposable;
     private Disposable mIntervalDisposable;
 
     @Inject
-    RetrofitManager retrofitManager;
+    RetrofitManager mNetworkProvider;
     @Inject
-    TimerManager timerManager;
+    TimerManager mTimerManager;
 
     public HeadlineHeaderView(@NonNull Context context) {
         super(context);
@@ -46,17 +46,17 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
     }
 
     public void loadData() {
-        mHttpDisposable = retrofitManager.loadHeadlineData()
+        mHttpDisposable = mNetworkProvider.loadHeadlineData()
                 .subscribe(new Consumer<List<HeadlineBean.DataBean>>() {
                     @Override
                     public void accept(List<HeadlineBean.DataBean> dataBeans) throws Exception {
-                        datas = dataBeans;
-                        binding.pointView.setPointCount(datas.size());
+                        mDatas = dataBeans;
+                        binding.pointView.setPointCount(mDatas.size());
 
-                        binding.headlineTextView.setText(datas.get(0).getTitle());
+                        binding.headlineTextView.setText(mDatas.get(0).getTitle());
 
                         HeadlinePagerAdapter adapter = new HeadlinePagerAdapter(getContext(),
-                                datas);
+                                mDatas);
                         binding.headlineViewPager.setAdapter(adapter);
                         binding.headlineViewPager.addOnPageChangeListener(HeadlineHeaderView.this);
                         startAutoPlay();
@@ -77,9 +77,9 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
 
     @Override
     public void onPageSelected(int position) {
-        currentPosition = position;
+        mCurrentPosition = position;
         int realPosition = position % binding.pointView.getPointCount();
-        binding.headlineTextView.setText(datas.get(realPosition).getTitle());
+        binding.headlineTextView.setText(mDatas.get(realPosition).getTitle());
         binding.pointView.setSelectedPosition(realPosition);
     }
 
@@ -100,11 +100,11 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
 
     // 自动循环播放ViewPager
     public void startAutoPlay() {
-        mIntervalDisposable = timerManager.loop()
+        mIntervalDisposable = mTimerManager.loop()
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) throws Exception {
-                        binding.headlineViewPager.setCurrentItem(++currentPosition);
+                        binding.headlineViewPager.setCurrentItem(++mCurrentPosition);
                     }
                 });
 

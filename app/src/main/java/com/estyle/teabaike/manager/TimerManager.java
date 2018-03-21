@@ -13,10 +13,10 @@ public class TimerManager {
 
     public static final String CONFIG_NAME = "config";
 
-    private Context context;
+    private Context mContext;
 
     public TimerManager(Context context) {
-        this.context = context;
+        this.mContext = context;
     }
 
     // 引导页休眠
@@ -27,7 +27,7 @@ public class TimerManager {
                     @Override
                     public Boolean apply(Long aLong) throws Exception {
                         SharedPreferences sharedPreferences =
-                                context.getSharedPreferences(CONFIG_NAME, Context.MODE_PRIVATE);
+                                mContext.getSharedPreferences(CONFIG_NAME, Context.MODE_PRIVATE);
                         return sharedPreferences.getBoolean("is_first_login", true);
                     }
                 });

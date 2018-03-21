@@ -13,10 +13,10 @@ import dagger.Provides;
 @Module
 public class DataModule {
 
-    private Context context;
+    private Context mContext;
 
     public DataModule(Context context) {
-        this.context = context;
+        this.mContext = context;
     }
 
     @Singleton
@@ -28,7 +28,7 @@ public class DataModule {
     @Singleton
     @Provides
     public GreenDaoManager provideGreenDaoManager() {
-        return new GreenDaoManager(context);
+        return new GreenDaoManager(mContext);
     }
 
 }

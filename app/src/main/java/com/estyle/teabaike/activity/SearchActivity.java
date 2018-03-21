@@ -28,13 +28,13 @@ public class SearchActivity extends BaseActivity implements MainAdapter.OnItemCl
 
     private ActivitySearchBinding binding;
 
-    private MainAdapter adapter;
+    private MainAdapter mAdapter;
 
-    private int page = 1;
-    private String keyword;
+    private int mPage = 1;
+    private String mKeyword;
 
     @Inject
-    RetrofitManager retrofitManager;
+    RetrofitManager mNetworkProvider;
 
     private Disposable mDisposable;
 
@@ -61,51 +61,51 @@ public class SearchActivity extends BaseActivity implements MainAdapter.OnItemCl
         binding.swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         binding.swipeRefreshLayout.setOnRefreshListener(this);
 
-        adapter = new MainAdapter(this);
-        adapter.setEmptyView(binding.emptyView);
-        adapter.setOnItemClickListener(this);
+        mAdapter = new MainAdapter(this);
+        mAdapter.setEmptyView(binding.emptyView);
+        mAdapter.setOnItemClickListener(this);
 
         FooterView footerView = new FooterView(this);
-        adapter.addFooterView(footerView);
+        mAdapter.addFooterView(footerView);
 
         binding.recyclerView.setOnLoadMoreListener(this);
-        binding.recyclerView.setAdapter(adapter);
+        binding.recyclerView.setAdapter(mAdapter);
     }
 
     private void initData() {
-        keyword = getIntent().getStringExtra("keyword");
-        getSupportActionBar().setTitle(keyword);
+        mKeyword = getIntent().getStringExtra("keyword");
+        getSupportActionBar().setTitle(mKeyword);
 
-        loadData(page, false);
+        loadData(mPage, false);
     }
 
     @Override
     public void onItemClick(int position) {
-        ContentActivity.startActivity(this, adapter.getItemId(position), true);
+        ContentActivity.startActivity(this, mAdapter.getItemId(position), true);
     }
 
     @Override
     public void onRefresh() {
-        loadData(page = 1, true);
+        loadData(mPage = 1, true);
     }
 
     @Override
     public void onLoadMore() {
-        loadData(++page, false);
+        loadData(++mPage, false);
     }
 
     // 加载网络数据
     private void loadData(int page, final boolean isRefresh) {
-        mDisposable = retrofitManager.loadSearchData(keyword, page)
+        mDisposable = mNetworkProvider.loadSearchData(mKeyword, page)
                 .subscribe(new Consumer<List<MainBean.DataBean>>() {
                     @Override
                     public void accept(List<MainBean.DataBean> dataBeans) throws Exception {
                         if (isRefresh) {
-                            adapter.refreshDatas(dataBeans);
+                            mAdapter.refreshDatas(dataBeans);
                             binding.swipeRefreshLayout.setRefreshing(false);
                         } else {
-                            adapter.addDatas(dataBeans);
-                            binding.recyclerView.isLoading = false;
+                            mAdapter.addDatas(dataBeans);
+                            binding.recyclerView.mIsLoading = false;
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -115,7 +115,7 @@ public class SearchActivity extends BaseActivity implements MainAdapter.OnItemCl
                         if (isRefresh) {
                             binding.swipeRefreshLayout.setRefreshing(false);
                         } else {
-                            binding.recyclerView.isLoading = false;
+                            binding.recyclerView.mIsLoading = false;
                         }
                     }
                 });

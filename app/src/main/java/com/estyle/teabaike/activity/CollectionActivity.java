@@ -15,7 +15,7 @@ import com.estyle.teabaike.adapter.CollectionAdapter;
 import com.estyle.teabaike.application.TeaBaikeApplication;
 import com.estyle.teabaike.bean.ContentDataBean;
 import com.estyle.teabaike.databinding.ActivityCollectionBinding;
-import com.estyle.teabaike.eventbus.CheckAllCollectionsEvent;
+import com.estyle.teabaike.bean.eventbus.CheckAllCollectionsEvent;
 import com.estyle.teabaike.manager.GreenDaoManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,15 +31,15 @@ public class CollectionActivity extends BaseActivity implements
 
     private ActivityCollectionBinding binding;
 
-    private CollectionAdapter adapter;
+    private CollectionAdapter mAdapter;
 
     // 删除功能是否可用
-    private boolean isDeleteEnabled;
+    private boolean mIsDeleteEnabled;
 
-    private Snackbar snackbar;
+    private Snackbar mSnackbar;
 
     @Inject
-    GreenDaoManager greenDaoManager;
+    GreenDaoManager mDBProvider;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, CollectionActivity.class);
@@ -61,23 +61,23 @@ public class CollectionActivity extends BaseActivity implements
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        adapter = new CollectionAdapter(this);
-        adapter.setEmptyView(binding.emptyView);
-        adapter.setOnItemClickListener(this);
-        adapter.setOnItemLongClickListener(this);
-        binding.setAdapter(adapter);
+        mAdapter = new CollectionAdapter(this);
+        mAdapter.setEmptyView(binding.emptyView);
+        mAdapter.setOnItemClickListener(this);
+        mAdapter.setOnItemLongClickListener(this);
+        binding.setAdapter(mAdapter);
     }
 
     private void initData() {
-        List<ContentDataBean> collectionList = greenDaoManager.queryCollectionDatas();
-        adapter.addDatas(collectionList);
+        List<ContentDataBean> collectionList = mDBProvider.queryCollectionDatas();
+        mAdapter.addDatas(collectionList);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (isDeleteEnabled) {
+                if (mIsDeleteEnabled) {
                     setDeleteEnabled(false);
                 } else {
                     finish();
@@ -89,17 +89,17 @@ public class CollectionActivity extends BaseActivity implements
 
     @Override
     public void onItemClick(int position) {
-        if (!isDeleteEnabled) {
-            ContentActivity.startActivity(this, adapter.getItemId(position), false);
+        if (!mIsDeleteEnabled) {
+            ContentActivity.startActivity(this, mAdapter.getItemId(position), false);
         } else {
-            adapter.invertItemStateAtPosition(position);
+            mAdapter.invertItemStateAtPosition(position);
         }
     }
 
     @Override
     public void onItemLongClick(int position) {
-        if (!isDeleteEnabled) {
-            adapter.invertItemStateAtPosition(position);
+        if (!mIsDeleteEnabled) {
+            mAdapter.invertItemStateAtPosition(position);
             setDeleteEnabled(true);
         }
     }
@@ -109,40 +109,40 @@ public class CollectionActivity extends BaseActivity implements
         TextView checkAllTextView = (TextView) view;
         switch (checkAllTextView.getText().toString()) {
             case "全选":
-                adapter.setIsCheckedAllItem(true);
+                mAdapter.setIsCheckedAllItem(true);
                 break;
             case "取消":
-                adapter.setIsCheckedAllItem(false);
+                mAdapter.setIsCheckedAllItem(false);
                 break;
         }
     }
 
     // 删除选中数据
     public void deleteItem(View view) {
-        int deleteCount = adapter.deleteCheckedItem();
+        int deleteCount = mAdapter.deleteCheckedItem();
         String tip = String.format(Locale.getDefault(), getString(R.string.delete_successful), deleteCount);
         setDeleteEnabled(false);
-        if (snackbar == null) {
-            snackbar = Snackbar.make(binding.getRoot(), tip, Snackbar.LENGTH_LONG)
+        if (mSnackbar == null) {
+            mSnackbar = Snackbar.make(binding.getRoot(), tip, Snackbar.LENGTH_LONG)
                     .setAction(R.string.revoke, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            adapter.restoreTempItem();
+                            mAdapter.restoreTempItem();
                         }
                     })
                     .setActionTextColor(Color.BLACK)
                     .addCallback(snackBarCallback);
-            snackbar.getView().setBackgroundResource(R.color.colorAccent);
+            mSnackbar.getView().setBackgroundResource(R.color.colorAccent);
         } else {
-            snackbar.setText(tip);
+            mSnackbar.setText(tip);
         }
-        snackbar.show();
+        mSnackbar.show();
     }
 
     // 设置是否可删除
     private void setDeleteEnabled(boolean isDeleteEnabled) {
-        this.isDeleteEnabled = isDeleteEnabled;
-        adapter.setDeleteBoxVisibility(isDeleteEnabled);
+        this.mIsDeleteEnabled = isDeleteEnabled;
+        mAdapter.setDeleteBoxVisibility(isDeleteEnabled);
         int visibility = isDeleteEnabled ? View.VISIBLE : View.INVISIBLE;
         binding.deleteBtn.setVisibility(visibility);
         binding.checkAllTextView.setVisibility(visibility);
@@ -150,7 +150,7 @@ public class CollectionActivity extends BaseActivity implements
 
     @Override
     public void onBackPressed() {
-        if (isDeleteEnabled) {
+        if (mIsDeleteEnabled) {
             setDeleteEnabled(false);
         } else {
             super.onBackPressed();
@@ -169,7 +169,7 @@ public class CollectionActivity extends BaseActivity implements
         @Override
         public void onDismissed(Snackbar transientBottomBar, int event) {
             super.onDismissed(transientBottomBar, event);
-            adapter.deleteData();
+            mAdapter.deleteData();
         }
     };
 
@@ -177,8 +177,8 @@ public class CollectionActivity extends BaseActivity implements
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        if (snackbar != null) {
-            snackbar.removeCallback(snackBarCallback);
+        if (mSnackbar != null) {
+            mSnackbar.removeCallback(snackBarCallback);
         }
     }
 

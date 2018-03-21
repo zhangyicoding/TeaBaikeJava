@@ -13,28 +13,28 @@ import java.util.List;
 
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
-    private List<ChannelBean> channelList;
+    private List<ChannelBean> mChannelList;
 
     public MainPagerAdapter(FragmentManager fm) {
         super(fm);
-        channelList = new ArrayList<>();
+        mChannelList = new ArrayList<>();
         for (int i = 0; i < Url.TYPES.length; i++) {
-            channelList.add(new ChannelBean(Url.TITLES[i], MainFragment.newInstance(Url.TYPES[i])));
+            mChannelList.add(new ChannelBean(Url.TITLES[i], MainFragment.newInstance(Url.TYPES[i])));
         }
     }
 
     @Override
     public Fragment getItem(int position) {
-        return channelList.get(position).getFragment();
+        return mChannelList.get(position).getFragment();
     }
 
     @Override
     public int getCount() {
-        return channelList.size();
+        return mChannelList.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return channelList.get(position).getChannel();
+        return mChannelList.get(position).getChannel();
     }
 }

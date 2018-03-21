@@ -17,17 +17,17 @@ public class GreenDaoManager {
 
     private static final String DB_NAME = "tea_baike.db";
 
-    private DaoSession daoSession;
+    private DaoSession mDaoSession;
 
     public GreenDaoManager(Context context) {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, DB_NAME);
         Database db = helper.getWritableDb();
-        daoSession = new DaoMaster(db).newSession();
+        mDaoSession = new DaoMaster(db).newSession();
     }
 
     // 收藏文章
     public void collectData(ContentDataBean data) {
-        ContentDataBeanDao dao = daoSession.getContentDataBeanDao();
+        ContentDataBeanDao dao = mDaoSession.getContentDataBeanDao();
         Query<ContentDataBean> query = dao.queryBuilder()
                 .where(ContentDataBeanDao.Properties.Id.eq(data.getId()))
                 .build();
@@ -39,7 +39,7 @@ public class GreenDaoManager {
 
     // 查询收藏的全部文章
     public List<ContentDataBean> queryCollectionDatas() {
-        return daoSession
+        return mDaoSession
                 .getContentDataBeanDao()
                 .queryBuilder()
                 .orderDesc(ContentDataBeanDao.Properties.CurrentTimeMillis)
@@ -49,7 +49,7 @@ public class GreenDaoManager {
 
     //    // 通过id查询收藏的文章
     public ContentDataBean queryCollectionDataById(long id) {
-        return daoSession
+        return mDaoSession
                 .getContentDataBeanDao()
                 .queryBuilder()
                 .where(ContentDataBeanDao.Properties.Id.eq(id))
@@ -60,7 +60,7 @@ public class GreenDaoManager {
     // 删除收藏的文章
     public void deleteCollectionData(List<TempCollectionBean> tempList) {
         for (TempCollectionBean tempCollection : tempList) {
-            daoSession.getContentDataBeanDao().delete(tempCollection.getCollection());
+            mDaoSession.getContentDataBeanDao().delete(tempCollection.getCollection());
         }
         tempList.clear();
     }

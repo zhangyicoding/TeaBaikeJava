@@ -13,7 +13,7 @@ import com.estyle.teabaike.application.TeaBaikeApplication;
 import com.estyle.teabaike.bean.ContentDataBean;
 import com.estyle.teabaike.bean.TempCollectionBean;
 import com.estyle.teabaike.databinding.ItemCollectionBinding;
-import com.estyle.teabaike.eventbus.CheckAllCollectionsEvent;
+import com.estyle.teabaike.bean.eventbus.CheckAllCollectionsEvent;
 import com.estyle.teabaike.manager.GreenDaoManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,40 +26,40 @@ import javax.inject.Inject;
 public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.ViewHolder> implements
         View.OnClickListener, View.OnLongClickListener {
 
-    private Context context;
-    private List<ContentDataBean> datas;
-    private List<Boolean> deleteStateList;
-    private List<TempCollectionBean> tempList;
-    private View emptyView;
-    private boolean isDeleteBoxVisible;
+    private Context mContext;
+    private List<ContentDataBean> mDatas;
+    private List<Boolean> mDeleteStateList;
+    private List<TempCollectionBean> mTempList;
+    private View mEmptyView;
+    private boolean mIsDeleteBoxVisible;
 
-    private OnItemClickListener onItemClickListener;
-    private OnItemLongClickListener onItemLongClickListener;
+    private OnItemClickListener mOnItemClickListener;
+    private OnItemLongClickListener mOnItemLongClickListener;
 
     @Inject
-    GreenDaoManager greenDaoManager;
+    GreenDaoManager mDBProvider;
 
     public CollectionAdapter(Context context) {
-        this.context = context;
+        this.mContext = context;
         TeaBaikeApplication.getInstance().getTeaBaikeComponent().inject(this);
-        datas = new ArrayList<>();
+        mDatas = new ArrayList<>();
     }
 
     public void addDatas(List<ContentDataBean> datas) {
-        this.datas.addAll(datas);
-        deleteStateList = new ArrayList<>();
-        for (int i = 0; i < this.datas.size(); i++) {
-            deleteStateList.add(false);
+        this.mDatas.addAll(datas);
+        mDeleteStateList = new ArrayList<>();
+        for (int i = 0; i < this.mDatas.size(); i++) {
+            mDeleteStateList.add(false);
         }
         notifyDataSetChanged();
     }
 
     // CheckBox可见
     public void setDeleteBoxVisibility(boolean isDeleteBoxVisible) {
-        this.isDeleteBoxVisible = isDeleteBoxVisible;
+        this.mIsDeleteBoxVisible = isDeleteBoxVisible;
         if (!isDeleteBoxVisible) {
-            for (int i = 0; i < deleteStateList.size(); i++) {
-                deleteStateList.set(i, false);
+            for (int i = 0; i < mDeleteStateList.size(); i++) {
+                mDeleteStateList.set(i, false);
             }
         }
         notifyDataSetChanged();
@@ -67,29 +67,29 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
     // 勾选指定位置Item
     public void invertItemStateAtPosition(int position) {
-        deleteStateList.set(position, !deleteStateList.get(position));
+        mDeleteStateList.set(position, !mDeleteStateList.get(position));
         notifyDataSetChanged();
     }
 
     // 全选/取消全选
     public void setIsCheckedAllItem(boolean isCheckedAll) {
-        for (int i = 0; i < deleteStateList.size(); i++) {
-            deleteStateList.set(i, isCheckedAll);
+        for (int i = 0; i < mDeleteStateList.size(); i++) {
+            mDeleteStateList.set(i, isCheckedAll);
         }
         notifyDataSetChanged();
     }
 
     // 删除选中数据
     public int deleteCheckedItem() {
-        if (tempList == null) {
-            tempList = new ArrayList<>();
+        if (mTempList == null) {
+            mTempList = new ArrayList<>();
         }
         int count = 0;
-        for (int i = deleteStateList.size() - 1; i >= 0; i--) {
-            if (deleteStateList.get(i)) {
-                tempList.add(new TempCollectionBean(i, datas.get(i)));
-                datas.remove(i);
-                deleteStateList.remove(i);
+        for (int i = mDeleteStateList.size() - 1; i >= 0; i--) {
+            if (mDeleteStateList.get(i)) {
+                mTempList.add(new TempCollectionBean(i, mDatas.get(i)));
+                mDatas.remove(i);
+                mDeleteStateList.remove(i);
                 count++;
             }
         }
@@ -98,28 +98,28 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
     // 恢复临时数据
     public void restoreTempItem() {
-        for (int i = tempList.size() - 1; i >= 0; i--) {
-            TempCollectionBean tempCollection = tempList.get(i);
-            datas.add(tempCollection.getPosition(), tempCollection.getCollection());
-            deleteStateList.add(tempCollection.getPosition(), false);
+        for (int i = mTempList.size() - 1; i >= 0; i--) {
+            TempCollectionBean tempCollection = mTempList.get(i);
+            mDatas.add(tempCollection.getPosition(), tempCollection.getCollection());
+            mDeleteStateList.add(tempCollection.getPosition(), false);
         }
         notifyDataSetChanged();
-        tempList.clear();
+        mTempList.clear();
     }
 
     // 删除数据库中的数据
     public void deleteData() {
-        greenDaoManager.deleteCollectionData(tempList);
+        mDBProvider.deleteCollectionData(mTempList);
     }
 
     // 设置空视图
     public void setEmptyView(View emptyView) {
-        this.emptyView = emptyView;
+        this.mEmptyView = emptyView;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ItemCollectionBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
+        ItemCollectionBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
                 R.layout.item_collection,
                 parent,
                 false);
@@ -138,31 +138,31 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ContentDataBean collection = datas.get(position);
+        ContentDataBean collection = mDatas.get(position);
         ItemCollectionBinding binding = holder.getBinding();
         binding.setBean(collection);
 
-        int visibility = isDeleteBoxVisible ? View.VISIBLE : View.INVISIBLE;
+        int visibility = mIsDeleteBoxVisible ? View.VISIBLE : View.INVISIBLE;
         binding.deleteBox.setVisibility(visibility);
         binding.deleteBox.setTag(position);
-        binding.deleteBox.setChecked(deleteStateList.get(position));
+        binding.deleteBox.setChecked(mDeleteStateList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        if (emptyView != null) {
-            if (datas.size() > 0) {
-                emptyView.setVisibility(View.INVISIBLE);
+        if (mEmptyView != null) {
+            if (mDatas.size() > 0) {
+                mEmptyView.setVisibility(View.INVISIBLE);
             } else {
-                emptyView.setVisibility(View.VISIBLE);
+                mEmptyView.setVisibility(View.VISIBLE);
             }
         }
-        return datas.size();
+        return mDatas.size();
     }
 
     @Override
     public long getItemId(int position) {
-        return Long.parseLong(datas.get(position).getId());
+        return Long.parseLong(mDatas.get(position).getId());
     }
 
     @Override
@@ -170,9 +170,9 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         int position;
         switch (view.getId()) {
             default:
-                if (onItemClickListener != null) {
+                if (mOnItemClickListener != null) {
                     position = ((RecyclerView) view.getParent()).getChildLayoutPosition(view);
-                    onItemClickListener.onItemClick(position);
+                    mOnItemClickListener.onItemClick(position);
                 }
                 break;
         }
@@ -183,9 +183,9 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         int position;
         switch (view.getId()) {
             default:
-                if (onItemLongClickListener != null) {
+                if (mOnItemLongClickListener != null) {
                     position = ((RecyclerView) view.getParent()).getChildLayoutPosition(view);
-                    onItemLongClickListener.onItemLongClick(position);
+                    mOnItemLongClickListener.onItemLongClick(position);
                 }
                 break;
         }
@@ -195,21 +195,21 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     // 删除Box勾选监听
     public void checkDeleteBox(CompoundButton buttonView, boolean isChecked) {
         int position = (int) buttonView.getTag();
-        deleteStateList.set(position, isChecked);
+        mDeleteStateList.set(position, isChecked);
 
         // 监听是否全选/取消全选，修改Activity中按钮状态
         int count = 0;
-        for (boolean isBoxChecked : deleteStateList) {
+        for (boolean isBoxChecked : mDeleteStateList) {
             if (isBoxChecked) {
                 count++;
             }
         }
         if (count == 0) {
             EventBus.getDefault().post(new CheckAllCollectionsEvent(
-                    context.getString(R.string.check_all)));
-        } else if (count == deleteStateList.size()) {
+                    mContext.getString(R.string.check_all)));
+        } else if (count == mDeleteStateList.size()) {
             EventBus.getDefault().post(new CheckAllCollectionsEvent(
-                    context.getString(R.string.uncheck_all)));
+                    mContext.getString(R.string.uncheck_all)));
         }
     }
 
@@ -240,11 +240,11 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
+        this.mOnItemClickListener = onItemClickListener;
     }
 
     public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
-        this.onItemLongClickListener = onItemLongClickListener;
+        this.mOnItemLongClickListener = onItemLongClickListener;
     }
 
 }

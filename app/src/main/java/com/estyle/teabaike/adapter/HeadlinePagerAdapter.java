@@ -16,23 +16,23 @@ import java.util.List;
 
 public class HeadlinePagerAdapter extends PagerAdapter implements View.OnClickListener {
 
-    private Context context;
-    private List<HeadlineBean.DataBean> datas;
-    private List<ImageView> viewList;
+    private Context mContext;
+    private List<HeadlineBean.DataBean> mDatas;
+    private List<ImageView> mViewlist;
 
     public HeadlinePagerAdapter(Context context, List<HeadlineBean.DataBean> datas) {
-        this.context = context;
-        this.datas = datas;
+        this.mContext = context;
+        this.mDatas = datas;
         if (datas.size() < 4) {
             datas.addAll(datas);
         }
-        viewList = new ArrayList<>();
+        mViewlist = new ArrayList<>();
         for (int i = 0; i < datas.size(); i++) {
             ImageView imageView = new ImageView(context);
             imageView.setId(i);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setOnClickListener(this);
-            viewList.add(imageView);
+            mViewlist.add(imageView);
             Glide.with(context)
                     .load(datas.get(i).getImage())
                     .into(imageView);
@@ -51,25 +51,25 @@ public class HeadlinePagerAdapter extends PagerAdapter implements View.OnClickLi
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        int realPosition = position % viewList.size();
-        container.addView(viewList.get(realPosition));
-        return viewList.get(realPosition);
+        int realPosition = position % mViewlist.size();
+        container.addView(mViewlist.get(realPosition));
+        return mViewlist.get(realPosition);
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        int realPosition = position % viewList.size();
-        container.removeView(viewList.get(realPosition));
+        int realPosition = position % mViewlist.size();
+        container.removeView(mViewlist.get(realPosition));
     }
 
     @Override
     public void onClick(View v) {
-        HeadlineBean.DataBean data = datas.get(v.getId());
+        HeadlineBean.DataBean data = mDatas.get(v.getId());
         String id = data.getId();
         if (TextUtils.isEmpty(id)) {
             String link = data.getLink();
             id = link.substring(link.lastIndexOf("/") + 1);
         }
-        ContentActivity.startActivity(context, Long.parseLong(id), true);
+        ContentActivity.startActivity(mContext, Long.parseLong(id), true);
     }
 }

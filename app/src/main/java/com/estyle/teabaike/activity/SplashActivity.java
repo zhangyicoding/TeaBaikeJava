@@ -18,7 +18,7 @@ import static com.estyle.teabaike.manager.TimerManager.CONFIG_NAME;
 public class SplashActivity extends BaseActivity {
 
     @Inject
-    TimerManager timerManager;
+    TimerManager mTimerManager;
 
     private Disposable mDisposable;
 
@@ -27,7 +27,7 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         TeaBaikeApplication.getInstance().getTeaBaikeComponent().inject(this);
 
-        mDisposable = timerManager.splash()
+        mDisposable = mTimerManager.splash()
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean isFirstLogin) throws Exception {

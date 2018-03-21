@@ -25,16 +25,16 @@ import io.reactivex.functions.Consumer;
 
 public class ContentActivity extends BaseActivity {
 
-    private Snackbar snackbar;
+    private Snackbar mSnackbar;
 
     private ActivityContentBinding binding;
 
-    private ContentDataBean data;
+    private ContentDataBean mData;
 
     @Inject
-    RetrofitManager retrofitManager;
+    RetrofitManager mNetworkProvider;
     @Inject
-    GreenDaoManager greenDaoManager;
+    GreenDaoManager mDBProvider;
 
     private Disposable mDisposable;
 
@@ -64,13 +64,12 @@ public class ContentActivity extends BaseActivity {
         long id = getIntent().getLongExtra("id", 0);
         boolean isOnline = getIntent().getBooleanExtra("is_online", false);
         if (isOnline) {
-//            subscription = retrofitManager.loadContentData(id)
-            mDisposable = retrofitManager.loadContentData(id)
+            mDisposable = mNetworkProvider.loadContentData(id)
                     .subscribe(new Consumer<ContentDataBean>() {
                         @Override
                         public void accept(ContentDataBean contentDataBean) throws Exception {
-                            data = contentDataBean;
-                            binding.setBean(data);
+                            mData = contentDataBean;
+                            binding.setBean(mData);
                         }
                     }, new Consumer<Throwable>() {
                         @Override
@@ -81,8 +80,8 @@ public class ContentActivity extends BaseActivity {
                         }
                     });
         } else {
-            data = greenDaoManager.queryCollectionDataById(id);
-            binding.setBean(data);
+            mData = mDBProvider.queryCollectionDataById(id);
+            binding.setBean(mData);
         }
     }
 
@@ -121,28 +120,28 @@ public class ContentActivity extends BaseActivity {
 
     // 分享文章
     private void share() {
-        if (data != null) {
+        if (mData != null) {
             showTip(R.string.share_successful);
         }
     }
 
     // 收藏文章
     private void collect() {
-        if (data != null) {
-            greenDaoManager.collectData(data);
+        if (mData != null) {
+            mDBProvider.collectData(mData);
             showTip(R.string.collect_successful);
         }
     }
 
     // 展示Snackbar
     private void showTip(int resId) {
-        if (snackbar == null) {
-            snackbar = Snackbar.make(binding.getRoot(), resId, Snackbar.LENGTH_SHORT);
-            snackbar.getView().setBackgroundResource(R.color.colorAccent);
+        if (mSnackbar == null) {
+            mSnackbar = Snackbar.make(binding.getRoot(), resId, Snackbar.LENGTH_SHORT);
+            mSnackbar.getView().setBackgroundResource(R.color.colorAccent);
         } else {
-            snackbar.setText(resId);
+            mSnackbar.setText(resId);
         }
-        snackbar.show();
+        mSnackbar.show();
     }
 
     @Override

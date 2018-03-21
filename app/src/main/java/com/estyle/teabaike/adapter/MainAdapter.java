@@ -18,63 +18,63 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
 
     private static final int TYPE_ITEM = -1;
 
-    private Context context;
-    private List<MainBean.DataBean> datas;
+    private Context mContext;
+    private List<MainBean.DataBean> mDatas;
 
-    private View emptyView;
-    private List<View> headerList;
-    private List<View> footerList;
-    private int headerCount;
-    private int footerCount;
+    private View mEmptyView;
+    private List<View> mHeaderList;
+    private List<View> mFooterList;
+    private int mHeaderCount;
+    private int mFooterCount;
 
-    private OnItemClickListener onItemClickListener;
+    private OnItemClickListener mOnItemClickListener;
 
     public MainAdapter(Context context) {
-        this.context = context;
-        datas = new ArrayList<>();
+        this.mContext = context;
+        mDatas = new ArrayList<>();
     }
 
     // 刷新数据
     public void refreshDatas(List<MainBean.DataBean> datas) {
-        this.datas.clear();
+        this.mDatas.clear();
         addDatas(datas);
 
     }
 
     // 添加数据
     public void addDatas(List<MainBean.DataBean> datas) {
-        this.datas.addAll(datas);
+        this.mDatas.addAll(datas);
         notifyDataSetChanged();
     }
 
     // 添加头视图
     public void addHeaderView(View headerView) {
-        if (headerList == null) {
-            headerList = new ArrayList<>();
+        if (mHeaderList == null) {
+            mHeaderList = new ArrayList<>();
         }
-        headerList.add(headerView);
-        headerCount = headerList.size();
+        mHeaderList.add(headerView);
+        mHeaderCount = mHeaderList.size();
     }
 
     // 添加w尾视图
     public void addFooterView(View footerView) {
-        if (footerList == null) {
-            footerList = new ArrayList<>();
+        if (mFooterList == null) {
+            mFooterList = new ArrayList<>();
         }
-        footerList.add(footerView);
-        footerCount = footerList.size();
+        mFooterList.add(footerView);
+        mFooterCount = mFooterList.size();
     }
 
     // 设置空视图
     public void setEmptyView(View emptyView) {
-        this.emptyView = emptyView;
+        this.mEmptyView = emptyView;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder;
         if (viewType == TYPE_ITEM) {
-            ItemMainBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
+            ItemMainBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mContext),
                     R.layout.item_main,
                     parent,
                     false);
@@ -83,11 +83,11 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
             holder = new ItemViewHolder(itemView);
             ((ItemViewHolder) holder).setBinding(binding);
         } else {
-            if (viewType < headerCount) {
-                View headerView = headerList.get(viewType);
+            if (viewType < mHeaderCount) {
+                View headerView = mHeaderList.get(viewType);
                 holder = new HeaderViewHolder(headerView);
             } else {
-                View footerView = footerList.get(viewType - headerCount - datas.size());
+                View footerView = mFooterList.get(viewType - mHeaderCount - mDatas.size());
                 holder = new FooterViewHolder(footerView);
             }
         }
@@ -102,20 +102,20 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-            MainBean.DataBean data = datas.get(position - headerCount);
+            MainBean.DataBean data = mDatas.get(position - mHeaderCount);
             itemViewHolder.getBinding().setBean(data);
         }
     }
 
     @Override
     public int getItemCount() {
-        int itemCount = headerCount + datas.size() + footerCount;
-        if (datas.size() > 0) {
-            if (emptyView != null) {
-                emptyView.setVisibility(View.GONE);
+        int itemCount = mHeaderCount + mDatas.size() + mFooterCount;
+        if (mDatas.size() > 0) {
+            if (mEmptyView != null) {
+                mEmptyView.setVisibility(View.GONE);
             }
-            if (footerCount > 0) {
-                for (View footerView : footerList) {
+            if (mFooterCount > 0) {
+                for (View footerView : mFooterList) {
                     footerView.setVisibility(View.VISIBLE);
                 }
             }
@@ -125,19 +125,19 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
 
     @Override
     public long getItemId(int position) {
-        return Long.parseLong(datas.get(position - headerCount).getId());
+        return Long.parseLong(mDatas.get(position - mHeaderCount).getId());
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (headerCount > 0) {
-            if (position < headerCount) {
+        if (mHeaderCount > 0) {
+            if (position < mHeaderCount) {
                 return position;
             }
         }
 
-        if (footerCount > 0) {
-            if (position > (headerCount + datas.size()) - 1) {
+        if (mFooterCount > 0) {
+            if (position > (mHeaderCount + mDatas.size()) - 1) {
                 return position;
             }
         }
@@ -149,9 +149,9 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
         int position;
         switch (view.getId()) {
             default:
-                if (onItemClickListener != null) {
+                if (mOnItemClickListener != null) {
                     position = ((RecyclerView) view.getParent()).getChildLayoutPosition(view);
-                    onItemClickListener.onItemClick(position);
+                    mOnItemClickListener.onItemClick(position);
                 }
                 break;
         }
@@ -193,7 +193,7 @@ public class MainAdapter extends RecyclerView.Adapter implements View.OnClickLis
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
+        this.mOnItemClickListener = onItemClickListener;
     }
 
 }

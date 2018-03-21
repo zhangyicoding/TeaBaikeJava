@@ -1,6 +1,5 @@
 package com.estyle.teabaike.glide;
 
-
 import android.content.Context;
 import android.os.Environment;
 import android.support.annotation.NonNull;

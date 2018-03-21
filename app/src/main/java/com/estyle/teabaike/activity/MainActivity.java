@@ -16,7 +16,7 @@ public class MainActivity extends BaseActivity {
 
     private ActivityMainBinding binding;
 
-    private ActionBarDrawerToggle toggle;
+    private ActionBarDrawerToggle mToggle;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -34,9 +34,9 @@ public class MainActivity extends BaseActivity {
     private void initView() {
         setSupportActionBar(binding.toolbar);
 
-        toggle = new ActionBarDrawerToggle(this, binding.mainDrawerLayout, binding.toolbar, 0, 0);
-        toggle.syncState();
-        binding.mainDrawerLayout.addDrawerListener(toggle);
+        mToggle = new ActionBarDrawerToggle(this, binding.mainDrawerLayout, binding.toolbar, 0, 0);
+        mToggle.syncState();
+        binding.mainDrawerLayout.addDrawerListener(mToggle);
 
         MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
         binding.mainViewPager.setAdapter(adapter);
@@ -46,8 +46,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        binding.mainDrawerLayout.removeDrawerListener(toggle);
-        toggle = null;
+        binding.mainDrawerLayout.removeDrawerListener(mToggle);
+        mToggle = null;
     }
 
     @Override

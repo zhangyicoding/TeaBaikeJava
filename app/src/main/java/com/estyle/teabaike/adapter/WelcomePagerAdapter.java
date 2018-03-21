@@ -13,25 +13,25 @@ import java.util.List;
 
 public class WelcomePagerAdapter extends PagerAdapter implements View.OnClickListener {
 
-    private List<View> viewList;
-    private OnButtonClickListener listener;
+    private List<View> mViewList;
+    private OnButtonClickListener mListener;
 
     public WelcomePagerAdapter(Context context) {
-        viewList = new ArrayList<>();
+        mViewList = new ArrayList<>();
         int[] imgIds = new int[]{R.drawable.welcome1, R.drawable.welcome2};
         View view;
         for (int imgId : imgIds) {
             view = new View(context);
             view.setBackgroundResource(imgId);
-            viewList.add(view);
+            mViewList.add(view);
         }
         view = LayoutInflater.from(context).inflate(R.layout.view_welcome3, null);
-        viewList.add(view);
+        mViewList.add(view);
     }
 
     @Override
     public int getCount() {
-        return viewList.size();
+        return mViewList.size();
     }
 
     @Override
@@ -41,24 +41,24 @@ public class WelcomePagerAdapter extends PagerAdapter implements View.OnClickLis
 
     @Override
     public View instantiateItem(ViewGroup container, int position) {
-        container.addView(viewList.get(position));
-        return viewList.get(position);
+        container.addView(mViewList.get(position));
+        return mViewList.get(position);
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView(viewList.get(position));
+        container.removeView(mViewList.get(position));
     }
 
     @Override
     public void onClick(View v) {
-        listener.onButtonClick(v);
+        mListener.onButtonClick(v);
     }
 
     public void setOnButtonClickListener(OnButtonClickListener listener) {
-        this.listener = listener;
-        viewList
-                .get(viewList.size() - 1)
+        this.mListener = listener;
+        mViewList
+                .get(mViewList.size() - 1)
                 .findViewById(R.id.main_btn)
                 .setOnClickListener(this);
     }

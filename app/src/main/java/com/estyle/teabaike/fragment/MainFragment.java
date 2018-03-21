@@ -32,15 +32,15 @@ public class MainFragment extends Fragment implements MainAdapter.OnItemClickLis
 
     private FragmentMainBinding binding;
 
-    private int type;
-    private int page = 1;
-    private MainAdapter adapter;
-    private HeadlineHeaderView headerView;
-    private View rootView;
-    private boolean isViewCreated;
+    private int mType;
+    private int mPage = 1;
+    private MainAdapter mAdapter;
+    private HeadlineHeaderView mHeaderview;
+    private View mRootView;
+    private boolean mIsViewCreated;
 
     @Inject
-    RetrofitManager retrofitManager;
+    RetrofitManager mNetworkProvider;
 
     private Disposable mDisposable;
 
@@ -57,79 +57,78 @@ public class MainFragment extends Fragment implements MainAdapter.OnItemClickLis
         super.onCreate(savedInstanceState);
         TeaBaikeApplication.getInstance().getTeaBaikeComponent().inject(this);
         if (getArguments() != null) {
-            type = getArguments().getInt("type", 0);
+            mType = getArguments().getInt("type", 0);
         }
 
-        adapter = new MainAdapter(getContext());
-        adapter.setOnItemClickListener(this);
+        mAdapter = new MainAdapter(getContext());
+        mAdapter.setOnItemClickListener(this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        if (!isViewCreated) {
+        if (!mIsViewCreated) {
             binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false);
-            rootView = binding.getRoot();
-            adapter.setEmptyView(binding.emptyView);
+            mRootView = binding.getRoot();
+            mAdapter.setEmptyView(binding.emptyView);
 
-            if (type == 0) {
-                headerView = new HeadlineHeaderView(getContext());
-                adapter.addHeaderView(headerView);
+            if (mType == 0) {
+                mHeaderview = new HeadlineHeaderView(getContext());
+                mAdapter.addHeaderView(mHeaderview);
             }
             FooterView footerView = new FooterView(getContext());
-            adapter.addFooterView(footerView);
+            mAdapter.addFooterView(footerView);
 
             binding.swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
             binding.swipeRefreshLayout.setOnRefreshListener(this);
 
             binding.recyclerView.setOnLoadMoreListener(this);
-            binding.recyclerView.setAdapter(adapter);
+            binding.recyclerView.setAdapter(mAdapter);
         }
-        return rootView;
+        return mRootView;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (!isViewCreated) {
-            if (type == 0) {
-                headerView.loadData();
+        if (!mIsViewCreated) {
+            if (mType == 0) {
+                mHeaderview.loadData();
             }
-            loadData(page, false);
-            isViewCreated = true;
+            loadData(mPage, false);
+            mIsViewCreated = true;
         }
     }
 
     @Override
     public void onItemClick(int position) {
-        ContentActivity.startActivity(getContext(), adapter.getItemId(position), true);
+        ContentActivity.startActivity(getContext(), mAdapter.getItemId(position), true);
     }
 
     @Override
     public void onRefresh() {
-        loadData(page = 1, true);
+        loadData(mPage = 1, true);
     }
 
 
     @Override
     public void onLoadMore() {
-        loadData(++page, false);
+        loadData(++mPage, false);
     }
 
     // 加载网络数据
     private void loadData(int page, final boolean isRefresh) {
-//        subscription = retrofitManager.loadMainData(type, page)
-        mDisposable = retrofitManager.loadMainData(type, page)
+        mDisposable = mNetworkProvider.loadMainData(mType, page)
                 .subscribe(new Consumer<List<MainBean.DataBean>>() {
                     @Override
                     public void accept(List<MainBean.DataBean> dataBeans) throws Exception {
                         if (isRefresh) {
-                            adapter.refreshDatas(dataBeans);
+                            mAdapter.refreshDatas(dataBeans);
                             binding.swipeRefreshLayout.setRefreshing(false);
                         } else {
-                            adapter.addDatas(dataBeans);
-                            binding.recyclerView.isLoading = false;
+                            mAdapter.addDatas(dataBeans);
+                            binding.recyclerView.mIsLoading = false;
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -139,7 +138,7 @@ public class MainFragment extends Fragment implements MainAdapter.OnItemClickLis
                         if (isRefresh) {
                             binding.swipeRefreshLayout.setRefreshing(false);
                         } else {
-                            binding.recyclerView.isLoading = false;
+                            binding.recyclerView.mIsLoading = false;
                         }
                     }
                 });
@@ -149,8 +148,8 @@ public class MainFragment extends Fragment implements MainAdapter.OnItemClickLis
     public void onDestroy() {
         super.onDestroy();
         binding.recyclerView.removeOnScrollListener();
-        if (type == 0) {
-            headerView.onDestroy();
+        if (mType == 0) {
+            mHeaderview.onDestroy();
         }
         mDisposable.dispose();
     }
