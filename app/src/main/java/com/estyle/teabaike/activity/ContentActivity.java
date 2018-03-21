@@ -151,5 +151,8 @@ public class ContentActivity extends BaseActivity {
         if (mDisposable != null) {
             mDisposable.dispose();
         }
+
+        binding.contentWebView.removeAllViews();
+        binding.contentWebView.destroy();
     }
 }
