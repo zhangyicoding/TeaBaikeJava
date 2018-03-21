@@ -4,9 +4,9 @@ package com.estyle.teabaike.retrofit;
 import com.estyle.teabaike.bean.ContentBean;
 import com.estyle.teabaike.constant.Url;
 
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import rx.Observable;
 
 public interface ContentHttpService {
 

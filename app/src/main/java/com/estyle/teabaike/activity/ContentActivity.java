@@ -1,12 +1,10 @@
 package com.estyle.teabaike.activity;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -22,8 +20,8 @@ import java.lang.reflect.Method;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
-import rx.functions.Action1;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 public class ContentActivity extends BaseActivity {
 
@@ -32,12 +30,13 @@ public class ContentActivity extends BaseActivity {
     private ActivityContentBinding binding;
 
     private ContentDataBean data;
-    private Subscription subscription;
 
     @Inject
     RetrofitManager retrofitManager;
     @Inject
     GreenDaoManager greenDaoManager;
+
+    private Disposable mDisposable;
 
     public static void startActivity(Context context, long id, boolean isOnline) {
         Intent intent = new Intent(context, ContentActivity.class);
@@ -65,16 +64,17 @@ public class ContentActivity extends BaseActivity {
         long id = getIntent().getLongExtra("id", 0);
         boolean isOnline = getIntent().getBooleanExtra("is_online", false);
         if (isOnline) {
-            subscription = retrofitManager.loadContentData(id)
-                    .subscribe(new Action1<ContentDataBean>() {
+//            subscription = retrofitManager.loadContentData(id)
+            mDisposable = retrofitManager.loadContentData(id)
+                    .subscribe(new Consumer<ContentDataBean>() {
                         @Override
-                        public void call(ContentDataBean dataBean) {
-                            data = dataBean;
+                        public void accept(ContentDataBean contentDataBean) throws Exception {
+                            data = contentDataBean;
                             binding.setBean(data);
                         }
-                    }, new Action1<Throwable>() {
+                    }, new Consumer<Throwable>() {
                         @Override
-                        public void call(Throwable throwable) {
+                        public void accept(Throwable throwable) throws Exception {
                             Toast.makeText(ContentActivity.this,
                                     R.string.fail_connect,
                                     Toast.LENGTH_SHORT).show();
@@ -148,8 +148,8 @@ public class ContentActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (subscription != null) {
-            subscription.unsubscribe();
+        if (mDisposable != null) {
+            mDisposable.dispose();
         }
     }
 }

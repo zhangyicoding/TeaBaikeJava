@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.estyle.teabaike.R;
@@ -21,8 +20,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
-import rx.functions.Action1;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 public class SearchActivity extends BaseActivity implements MainAdapter.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, RecyclerView.OnLoadMoreListener {
@@ -33,10 +32,11 @@ public class SearchActivity extends BaseActivity implements MainAdapter.OnItemCl
 
     private int page = 1;
     private String keyword;
-    private Subscription subscription;
 
     @Inject
     RetrofitManager retrofitManager;
+
+    private Disposable mDisposable;
 
     public static void startActivity(Context context, String keyword) {
         Intent intent = new Intent(context, SearchActivity.class);
@@ -96,21 +96,21 @@ public class SearchActivity extends BaseActivity implements MainAdapter.OnItemCl
 
     // 加载网络数据
     private void loadData(int page, final boolean isRefresh) {
-        subscription = retrofitManager.loadSearchData(keyword, page)
-                .subscribe(new Action1<List<MainBean.DataBean>>() {
+        mDisposable = retrofitManager.loadSearchData(keyword, page)
+                .subscribe(new Consumer<List<MainBean.DataBean>>() {
                     @Override
-                    public void call(List<MainBean.DataBean> datas) {
+                    public void accept(List<MainBean.DataBean> dataBeans) throws Exception {
                         if (isRefresh) {
-                            adapter.refreshDatas(datas);
+                            adapter.refreshDatas(dataBeans);
                             binding.swipeRefreshLayout.setRefreshing(false);
                         } else {
-                            adapter.addDatas(datas);
+                            adapter.addDatas(dataBeans);
                             binding.recyclerView.isLoading = false;
                         }
                     }
-                }, new Action1<Throwable>() {
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void call(Throwable throwable) {
+                    public void accept(Throwable throwable) throws Exception {
                         binding.emptyView.setText(R.string.fail_connect);
                         if (isRefresh) {
                             binding.swipeRefreshLayout.setRefreshing(false);
@@ -135,7 +135,7 @@ public class SearchActivity extends BaseActivity implements MainAdapter.OnItemCl
     protected void onDestroy() {
         super.onDestroy();
         binding.recyclerView.removeOnScrollListener();
-        subscription.unsubscribe();
+        mDisposable.dispose();
     }
 
 }

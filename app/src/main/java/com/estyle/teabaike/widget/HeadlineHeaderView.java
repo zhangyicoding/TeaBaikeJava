@@ -19,8 +19,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
-import rx.functions.Action1;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageChangeListener {
 
@@ -29,8 +29,9 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
     private int currentPosition;
 
     private List<HeadlineBean.DataBean> datas;
-    private Subscription httpSubscription;
-    private Subscription intervalSubscription;
+
+    private Disposable mHttpDisposable;
+    private Disposable mIntervalDisposable;
 
     @Inject
     RetrofitManager retrofitManager;
@@ -45,11 +46,11 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
     }
 
     public void loadData() {
-        httpSubscription = retrofitManager.loadHeadlineData()
-                .subscribe(new Action1<List<HeadlineBean.DataBean>>() {
+        mHttpDisposable = retrofitManager.loadHeadlineData()
+                .subscribe(new Consumer<List<HeadlineBean.DataBean>>() {
                     @Override
-                    public void call(List<HeadlineBean.DataBean> dataBean) {
-                        datas = dataBean;
+                    public void accept(List<HeadlineBean.DataBean> dataBeans) throws Exception {
+                        datas = dataBeans;
                         binding.pointView.setPointCount(datas.size());
 
                         binding.headlineTextView.setText(datas.get(0).getTitle());
@@ -60,12 +61,13 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
                         binding.headlineViewPager.addOnPageChangeListener(HeadlineHeaderView.this);
                         startAutoPlay();
                     }
-                }, new Action1<Throwable>() {
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void call(Throwable throwable) {
+                    public void accept(Throwable throwable) throws Exception {
 
                     }
                 });
+
     }
 
     @Override
@@ -85,10 +87,10 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
     public void onPageScrollStateChanged(int state) {
         switch (state) {
             case ViewPager.SCROLL_STATE_DRAGGING:// 拖拽状态，停止自动播放
-                intervalSubscription.unsubscribe();
+                mIntervalDisposable.dispose();
                 break;
             case ViewPager.SCROLL_STATE_IDLE:// 松手后恢复自动播放
-                if (intervalSubscription.isUnsubscribed()) {
+                if (mIntervalDisposable.isDisposed()) {
                     startAutoPlay();
                 }
                 break;
@@ -98,22 +100,20 @@ public class HeadlineHeaderView extends FrameLayout implements ViewPager.OnPageC
 
     // 自动循环播放ViewPager
     public void startAutoPlay() {
-        intervalSubscription = timerManager.loop()
-                .subscribe(action1);
-    }
+        mIntervalDisposable = timerManager.loop()
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        binding.headlineViewPager.setCurrentItem(++currentPosition);
+                    }
+                });
 
-    // Databinding和Java8 Lambda冲突
-    private Action1<Long> action1 = new Action1<Long>() {
-        @Override
-        public void call(Long aLong) {
-            binding.headlineViewPager.setCurrentItem(++currentPosition);
-        }
-    };
+    }
 
     public void onDestroy() {
         binding.headlineViewPager.removeOnPageChangeListener(this);
-        httpSubscription.unsubscribe();
-        intervalSubscription.unsubscribe();
+        mHttpDisposable.dispose();
+        mIntervalDisposable.dispose();
     }
 
 }
