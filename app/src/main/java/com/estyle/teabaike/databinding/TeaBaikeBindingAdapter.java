@@ -13,8 +13,6 @@ public class TeaBaikeBindingAdapter {
     public static void loadImage(ImageView imageView, String url) {
         Glide.with(imageView.getContext())
                 .load(url)
-                .placeholder(R.mipmap.ic_launcher)
-                .error(R.mipmap.ic_launcher)
                 .into(imageView);
     }
 
