@@ -11,7 +11,7 @@ import com.estyle.teabaike.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WelcomePagerAdapter extends PagerAdapter implements View.OnClickListener {
+public class WelcomePagerAdapter extends PagerAdapter {
 
     private List<View> mViewList;
     private OnButtonClickListener mListener;
@@ -50,17 +50,11 @@ public class WelcomePagerAdapter extends PagerAdapter implements View.OnClickLis
         container.removeView(mViewList.get(position));
     }
 
-    @Override
-    public void onClick(View v) {
-        mListener.onButtonClick(v);
-    }
-
     public void setOnButtonClickListener(OnButtonClickListener listener) {
         this.mListener = listener;
-        mViewList
-                .get(mViewList.size() - 1)
+        mViewList.get(mViewList.size() - 1)
                 .findViewById(R.id.main_btn)
-                .setOnClickListener(this);
+                .setOnClickListener(v -> mListener.onButtonClick(v));
     }
 
     public interface OnButtonClickListener {
