@@ -9,6 +9,7 @@ import com.estyle.teabaike.retrofit.ContentHttpService;
 import com.estyle.teabaike.retrofit.HeadlineHttpService;
 import com.estyle.teabaike.retrofit.MainHttpService;
 import com.estyle.teabaike.retrofit.SearchHttpService;
+import com.estyle.teabaike.util.EstyleLog;
 
 import java.util.List;
 
@@ -63,6 +64,7 @@ public class RetrofitManager {
                 .map(new Function<HeadlineBean, List<HeadlineBean.DataBean>>() {
                     @Override
                     public List<HeadlineBean.DataBean> apply(HeadlineBean headlineBean) throws Exception {
+                        EstyleLog.e("net mgr", Thread.currentThread().getName());
                         return headlineBean.getData();
                     }
                 });
