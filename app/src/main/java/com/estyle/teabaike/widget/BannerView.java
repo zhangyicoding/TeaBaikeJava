@@ -91,9 +91,6 @@ public class BannerView extends ViewPager {
         mAdapter = new BannerAdapter(this, imagePathList);
         setAdapter(mAdapter);
 
-//        mCurrentPosition = Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % imagePathList.size();
-//        setCurrentItem(mCurrentPosition, false);
-
         if (imagePathList.size() != 1) initCircleListener();
     }
 
