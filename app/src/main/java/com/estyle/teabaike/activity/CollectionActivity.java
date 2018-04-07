@@ -124,12 +124,7 @@ public class CollectionActivity extends BaseActivity implements
         setDeleteEnabled(false);
         if (mSnackbar == null) {
             mSnackbar = Snackbar.make(binding.getRoot(), tip, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.revoke, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mAdapter.restoreTempItem();
-                        }
-                    })
+                    .setAction(R.string.revoke, v -> mAdapter.restoreTempItem())
                     .setActionTextColor(Color.BLACK)
                     .addCallback(snackBarCallback);
             mSnackbar.getView().setBackgroundResource(R.color.colorAccent);

@@ -14,7 +14,6 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -42,14 +41,9 @@ public class RetrofitManager {
             observable = service.getMainObservable(type, page);
         }
         return observable
+                .map(MainBean::getData)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Function<MainBean, List<MainBean.DataBean>>() {
-                    @Override
-                    public List<MainBean.DataBean> apply(MainBean mainBean) throws Exception {
-                        return mainBean.getData();
-                    }
-                });
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 
@@ -58,14 +52,9 @@ public class RetrofitManager {
         return mRetrofit
                 .create(HeadlineHttpService.class)
                 .getObservable()
+                .map(HeadlineBean::getData)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Function<HeadlineBean, List<HeadlineBean.DataBean>>() {
-                    @Override
-                    public List<HeadlineBean.DataBean> apply(HeadlineBean headlineBean) throws Exception {
-                        return headlineBean.getData();
-                    }
-                });
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     // 详情页数据
@@ -73,14 +62,9 @@ public class RetrofitManager {
         return mRetrofit
                 .create(ContentHttpService.class)
                 .getObservable(id)
+                .map(ContentBean::getData)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Function<ContentBean, ContentDataBean>() {
-                    @Override
-                    public ContentDataBean apply(ContentBean contentBean) throws Exception {
-                        return contentBean.getData();
-                    }
-                });
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     // 搜索页数据
@@ -88,14 +72,9 @@ public class RetrofitManager {
         return mRetrofit
                 .create(SearchHttpService.class)
                 .getObservable(keyword, page)
+                .map(MainBean::getData)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Function<MainBean, List<MainBean.DataBean>>() {
-                    @Override
-                    public List<MainBean.DataBean> apply(MainBean mainBean) throws Exception {
-                        return mainBean.getData();
-                    }
-                });
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 }

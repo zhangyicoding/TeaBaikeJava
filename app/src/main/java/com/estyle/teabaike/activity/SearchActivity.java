@@ -10,18 +10,14 @@ import android.view.MenuItem;
 import com.estyle.teabaike.R;
 import com.estyle.teabaike.adapter.MainAdapter;
 import com.estyle.teabaike.application.TeaBaikeApplication;
-import com.estyle.teabaike.bean.MainBean;
 import com.estyle.teabaike.databinding.ActivitySearchBinding;
 import com.estyle.teabaike.manager.RetrofitManager;
 import com.estyle.teabaike.widget.FooterView;
 import com.estyle.teabaike.widget.RecyclerView;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 public class SearchActivity extends BaseActivity implements MainAdapter.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, RecyclerView.OnLoadMoreListener {
@@ -97,28 +93,23 @@ public class SearchActivity extends BaseActivity implements MainAdapter.OnItemCl
     // 加载网络数据
     private void loadData(int page, final boolean isRefresh) {
         mDisposable = mNetworkProvider.loadSearchData(mKeyword, page)
-                .subscribe(new Consumer<List<MainBean.DataBean>>() {
-                    @Override
-                    public void accept(List<MainBean.DataBean> dataBeans) throws Exception {
-                        if (isRefresh) {
-                            mAdapter.refreshDatas(dataBeans);
-                            binding.swipeRefreshLayout.setRefreshing(false);
-                        } else {
-                            mAdapter.addDatas(dataBeans);
-                            binding.recyclerView.mIsLoading = false;
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        binding.emptyView.setText(R.string.fail_connect);
-                        if (isRefresh) {
-                            binding.swipeRefreshLayout.setRefreshing(false);
-                        } else {
-                            binding.recyclerView.mIsLoading = false;
-                        }
-                    }
-                });
+                .subscribe(dataBeans -> {
+                            if (isRefresh) {
+                                mAdapter.refreshDatas(dataBeans);
+                                binding.swipeRefreshLayout.setRefreshing(false);
+                            } else {
+                                mAdapter.addDatas(dataBeans);
+                                binding.recyclerView.mIsLoading = false;
+                            }
+                        },
+                        throwable -> {
+                            binding.emptyView.setText(R.string.fail_connect);
+                            if (isRefresh) {
+                                binding.swipeRefreshLayout.setRefreshing(false);
+                            } else {
+                                binding.recyclerView.mIsLoading = false;
+                            }
+                        });
     }
 
     @Override
