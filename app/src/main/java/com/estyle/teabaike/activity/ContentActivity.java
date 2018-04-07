@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 public class ContentActivity extends BaseActivity {
 
@@ -65,20 +64,13 @@ public class ContentActivity extends BaseActivity {
         boolean isOnline = getIntent().getBooleanExtra("is_online", false);
         if (isOnline) {
             mDisposable = mNetworkProvider.loadContentData(id)
-                    .subscribe(new Consumer<ContentDataBean>() {
-                        @Override
-                        public void accept(ContentDataBean contentDataBean) throws Exception {
-                            mData = contentDataBean;
-                            binding.setBean(mData);
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            Toast.makeText(ContentActivity.this,
+                    .subscribe(contentDataBean -> {
+                                mData = contentDataBean;
+                                binding.setBean(mData);
+                            },
+                            throwable -> Toast.makeText(ContentActivity.this,
                                     R.string.fail_connect,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                                    Toast.LENGTH_SHORT).show());
         } else {
             mData = mDBProvider.queryCollectionDataById(id);
             binding.setBean(mData);

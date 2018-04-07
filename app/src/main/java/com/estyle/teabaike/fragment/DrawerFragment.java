@@ -27,7 +27,7 @@ public class DrawerFragment extends Fragment implements
     private EditText mKeywordEditText;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         FragmentDrawerBinding binding = DataBindingUtil.inflate(inflater,
                 R.layout.fragment_drawer,
@@ -35,8 +35,8 @@ public class DrawerFragment extends Fragment implements
         NavigationView rootView = (NavigationView) binding.getRoot();
         rootView.setNavigationItemSelectedListener(this);
         View headerView = rootView.getHeaderView(0);
-        mKeywordEditText = (EditText) headerView.findViewById(R.id.keyword_et);
-        Button searchBtn = (Button) headerView.findViewById(R.id.search_btn);
+        mKeywordEditText = headerView.findViewById(R.id.keyword_et);
+        Button searchBtn = headerView.findViewById(R.id.search_btn);
         searchBtn.setOnClickListener(this);
         return rootView;
     }

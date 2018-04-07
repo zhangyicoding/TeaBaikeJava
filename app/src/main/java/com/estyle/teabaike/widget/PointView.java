@@ -42,8 +42,4 @@ public class PointView extends LinearLayout {
         }
     }
 
-    public int getPointCount() {
-        return mCount;
-    }
-
 }

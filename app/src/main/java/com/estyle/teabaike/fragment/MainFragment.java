@@ -3,6 +3,7 @@ package com.estyle.teabaike.fragment;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -13,19 +14,15 @@ import com.estyle.teabaike.R;
 import com.estyle.teabaike.activity.ContentActivity;
 import com.estyle.teabaike.adapter.MainAdapter;
 import com.estyle.teabaike.application.TeaBaikeApplication;
-import com.estyle.teabaike.bean.MainBean;
 import com.estyle.teabaike.databinding.FragmentMainBinding;
 import com.estyle.teabaike.manager.RetrofitManager;
 import com.estyle.teabaike.widget.FooterView;
 import com.estyle.teabaike.widget.HeadlineHeaderView;
 import com.estyle.teabaike.widget.RecyclerView;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 public class MainFragment extends Fragment implements MainAdapter.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, RecyclerView.OnLoadMoreListener {
@@ -65,7 +62,7 @@ public class MainFragment extends Fragment implements MainAdapter.OnItemClickLis
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         if (!mIsViewCreated) {
@@ -90,7 +87,7 @@ public class MainFragment extends Fragment implements MainAdapter.OnItemClickLis
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (!mIsViewCreated) {
             if (mType == 0) {
@@ -120,28 +117,23 @@ public class MainFragment extends Fragment implements MainAdapter.OnItemClickLis
     // 加载网络数据
     private void loadData(int page, final boolean isRefresh) {
         mDisposable = mNetworkProvider.loadMainData(mType, page)
-                .subscribe(new Consumer<List<MainBean.DataBean>>() {
-                    @Override
-                    public void accept(List<MainBean.DataBean> dataBeans) throws Exception {
-                        if (isRefresh) {
-                            mAdapter.refreshDatas(dataBeans);
-                            binding.swipeRefreshLayout.setRefreshing(false);
-                        } else {
-                            mAdapter.addDatas(dataBeans);
-                            binding.recyclerView.mIsLoading = false;
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        binding.emptyView.setText(R.string.fail_connect);
-                        if (isRefresh) {
-                            binding.swipeRefreshLayout.setRefreshing(false);
-                        } else {
-                            binding.recyclerView.mIsLoading = false;
-                        }
-                    }
-                });
+                .subscribe(dataBeans -> {
+                            if (isRefresh) {
+                                mAdapter.refreshDatas(dataBeans);
+                                binding.swipeRefreshLayout.setRefreshing(false);
+                            } else {
+                                mAdapter.addDatas(dataBeans);
+                                binding.recyclerView.mIsLoading = false;
+                            }
+                        },
+                        throwable -> {
+                            binding.emptyView.setText(R.string.fail_connect);
+                            if (isRefresh) {
+                                binding.swipeRefreshLayout.setRefreshing(false);
+                            } else {
+                                binding.recyclerView.mIsLoading = false;
+                            }
+                        });
     }
 
     @Override

@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
 
 public class TimerManager {
 
@@ -23,21 +21,11 @@ public class TimerManager {
     public Observable<Boolean> splash() {
         return Observable
                 .timer(2, TimeUnit.SECONDS)
-                .map(new Function<Long, Boolean>() {
-                    @Override
-                    public Boolean apply(Long aLong) throws Exception {
-                        SharedPreferences sharedPreferences =
-                                mContext.getSharedPreferences(CONFIG_NAME, Context.MODE_PRIVATE);
-                        return sharedPreferences.getBoolean("is_first_login", true);
-                    }
+                .map(aLong -> {
+                    SharedPreferences sharedPreferences =
+                            mContext.getSharedPreferences(CONFIG_NAME, Context.MODE_PRIVATE);
+                    return sharedPreferences.getBoolean("is_first_login", true);
                 });
-    }
-
-    // 头条循环播放
-    public Observable<Long> loop() {
-        return Observable
-                .interval(2, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread());
     }
 
 }
