@@ -15,8 +15,6 @@ import com.estyle.teabaike.bean.HeadlineBean;
 import com.estyle.teabaike.databinding.ViewHeadlineHeaderBinding;
 import com.estyle.teabaike.manager.RetrofitManager;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
@@ -25,8 +23,6 @@ import io.reactivex.disposables.Disposable;
 public class HeadlineHeaderView extends FrameLayout {
 
     private ViewHeadlineHeaderBinding binding;
-
-    private List<HeadlineBean.DataBean> mDatas;
 
     private Disposable mHttpDisposable;
 
@@ -43,16 +39,15 @@ public class HeadlineHeaderView extends FrameLayout {
     public void loadData() {
         mHttpDisposable = mNetworkProvider.loadHeadlineData()
                 .doOnNext(dataBeans -> {
-                    mDatas = dataBeans;
-                    binding.pointView.setPointCount(mDatas.size());
-                    binding.headlineTextView.setText(mDatas.get(0).getTitle());
+                    binding.pointView.setPointCount(dataBeans.size());
+                    binding.headlineTextView.setText(dataBeans.get(0).getTitle());
                     binding.bannerView.setOnBannerSelectedListener(position -> {
-                        binding.headlineTextView.setText(mDatas.get(position).getTitle());
+                        binding.headlineTextView.setText(dataBeans.get(position).getTitle());
                         binding.pointView.setSelectedPosition(position);
                     });
                     binding.bannerView.setOnBannerClickListener(position ->
                             ContentActivity.startActivity(getContext(),
-                                    Long.parseLong(mDatas.get(position).getId()),
+                                    Long.parseLong(dataBeans.get(position).getId()),
                                     true));
                 })
                 .concatMap(Observable::fromIterable)
