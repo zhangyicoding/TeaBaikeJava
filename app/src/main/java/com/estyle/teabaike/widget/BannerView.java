@@ -82,7 +82,7 @@ public class BannerView extends ViewPager {
         }
     }
 
-    // 设置图片路径和切换时间间隔
+    // 设置图片路径和图片加载方式
     public void loadImages(List<String> imagePathList, ImageCallback callback) {
         if (callback == null || imagePathList == null || imagePathList.size() == 0) return;
 
@@ -147,7 +147,8 @@ public class BannerView extends ViewPager {
                 mDownTime = System.currentTimeMillis();
                 stopTimer();
                 break;
-            case MotionEvent.ACTION_UP:// ViewPager的child可点击时
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
                 long upTime = System.currentTimeMillis();
                 startTimer();
                 if (upTime - mDownTime >= 500) return true;
@@ -159,7 +160,7 @@ public class BannerView extends ViewPager {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
-            case MotionEvent.ACTION_UP:// ViewPager的child不可点击时
+            case MotionEvent.ACTION_UP:
                 startTimer();
                 break;
         }
@@ -205,7 +206,6 @@ public class BannerView extends ViewPager {
                 mBannerView.mOnBannerSelectedListener.onBannerSelected(realPosition);
             }
         }
-
     }
 
     private static class BannerAdapter extends PagerAdapter implements OnClickListener {
