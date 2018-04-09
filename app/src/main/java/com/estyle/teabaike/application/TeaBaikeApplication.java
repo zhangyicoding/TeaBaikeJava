@@ -1,6 +1,8 @@
 package com.estyle.teabaike.application;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.estyle.teabaike.dagger.component.DaggerTeaBaikeComponent;
 import com.estyle.teabaike.dagger.component.TeaBaikeComponent;
@@ -14,6 +16,12 @@ public class TeaBaikeApplication extends Application {
     private static TeaBaikeApplication sApplication;
     private RefWatcher mRefWatcher;
     private TeaBaikeComponent mComponent;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(this);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {
