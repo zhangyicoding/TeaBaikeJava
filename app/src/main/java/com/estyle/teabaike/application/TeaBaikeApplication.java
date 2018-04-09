@@ -6,11 +6,13 @@ import com.estyle.teabaike.dagger.component.DaggerTeaBaikeComponent;
 import com.estyle.teabaike.dagger.component.TeaBaikeComponent;
 import com.estyle.teabaike.dagger.module.DataModule;
 import com.estyle.teabaike.dagger.module.TimerModule;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 public class TeaBaikeApplication extends Application {
 
     private static TeaBaikeApplication sApplication;
-//    private RefWatcher mRefWatcher;
+    private RefWatcher mRefWatcher;
     private TeaBaikeComponent mComponent;
 
     @Override
@@ -18,15 +20,15 @@ public class TeaBaikeApplication extends Application {
         super.onCreate();
 
         sApplication = this;
-//        initLeakCanary();
+        initLeakCanary();
         initDagger();
     }
 
-//    private void initLeakCanary() {
-//        if (!LeakCanary.isInAnalyzerProcess(this)) {
-//            mRefWatcher = LeakCanary.install(this);
-//        }
-//    }
+    private void initLeakCanary() {
+        if (!LeakCanary.isInAnalyzerProcess(this)) {
+            mRefWatcher = LeakCanary.install(this);
+        }
+    }
 
     private void initDagger() {
         mComponent = DaggerTeaBaikeComponent
@@ -44,7 +46,7 @@ public class TeaBaikeApplication extends Application {
         return mComponent;
     }
 
-//    public RefWatcher getRefWatcher() {
-//        return mRefWatcher;
-//    }
+    public RefWatcher getRefWatcher() {
+        return mRefWatcher;
+    }
 }
