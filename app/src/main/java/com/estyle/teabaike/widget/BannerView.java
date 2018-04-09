@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
+ * Created by zhangyi
+ *
  * loadImages：设置图片路径并启动自动轮播，参数ImageCallback指定图片加载方式
  * setCircling：设置是否开启自动轮播，默认开启
  * isCircling：获取当前轮播状态
