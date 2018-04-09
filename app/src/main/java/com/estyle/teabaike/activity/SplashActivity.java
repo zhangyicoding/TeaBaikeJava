@@ -34,7 +34,7 @@ public class SplashActivity extends BaseActivity {
                                 Context.MODE_PRIVATE);
                         sharedPreferences.edit()
                                 .putBoolean("is_first_login", false)
-                                .commit();
+                                .apply();
                     } else {
                         MainActivity.startActivity(SplashActivity.this);
                     }
