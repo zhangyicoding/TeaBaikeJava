@@ -8,7 +8,6 @@ android {
         applicationId "com.estyle.teabaike"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -34,8 +33,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation 'junit:junit:4.12'
-    // MultiDex for api level 19-
-    implementation 'com.android.support:multidex:1.0.3'
+    // ConstraintLayout
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     // android_support_v7
     implementation 'com.android.support:appcompat-v7:' + rootProject.ext.androidSupportv7
     implementation 'com.android.support:recyclerview-v7:' + rootProject.ext.androidSupportv7
