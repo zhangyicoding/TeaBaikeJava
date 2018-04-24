@@ -39,11 +39,11 @@ public class HeadlineHeaderView extends FrameLayout {
     public void loadData() {
         mHttpDisposable = mNetworkProvider.loadHeadlineData()
                 .doOnNext(dataBeans -> {
-                    binding.pointView.setPointCount(dataBeans.size());
+                    binding.pointsView.setPointCount(dataBeans.size());
                     binding.headlineTextView.setText(dataBeans.get(0).getTitle());
                     binding.bannerView.setOnBannerSelectedListener(position -> {
                         binding.headlineTextView.setText(dataBeans.get(position).getTitle());
-                        binding.pointView.setSelectedPosition(position);
+                        binding.pointsView.setSelectedPosition(position);
                     });
                     binding.bannerView.setOnBannerClickListener(position ->
                             ContentActivity.startActivity(getContext(),

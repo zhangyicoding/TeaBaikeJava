@@ -10,6 +10,9 @@ import android.widget.LinearLayout;
 
 import com.estyle.teabaike.R;
 
+/**
+ * Created by zhangyi
+ */
 public class PointsView extends LinearLayout {
 
     private int mPointCount;
@@ -47,7 +50,9 @@ public class PointsView extends LinearLayout {
                     params.setMargins(0, 0, 0, 0);
                 }
                 point.setLayoutParams(params);
-                point.setBackgroundDrawable(pointDrawable);
+//                point.setBackgroundDrawable(pointDrawable);
+                // bug，为啥这么写就可以，上面不行
+                point.setBackgroundResource(R.drawable.selector_point);
                 addView(point);
             }
             getChildAt(0).setSelected(true);

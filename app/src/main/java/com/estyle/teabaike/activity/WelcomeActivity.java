@@ -34,7 +34,7 @@ public class WelcomeActivity extends BaseActivity implements
         adapter.setOnButtonClickListener(this);
         binding.welcomeViewPager.setAdapter(adapter);
         binding.welcomeViewPager.addOnPageChangeListener(this);
-        binding.pointView.setPointCount(adapter.getCount());
+        binding.pointsView.setPointCount(adapter.getCount());
     }
 
     @Override
@@ -44,7 +44,7 @@ public class WelcomeActivity extends BaseActivity implements
 
     @Override
     public void onPageSelected(int position) {
-        binding.pointView.setSelectedPosition(position);
+        binding.pointsView.setSelectedPosition(position);
     }
 
     @Override

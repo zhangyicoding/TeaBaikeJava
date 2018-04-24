@@ -2,7 +2,7 @@
 <resources>
 
     <declare-styleable name="PointsView">
-        <attr name="pointDrawable" format="reference" />
+        <attr name="pointDrawable" format="reference|color" />
         <attr name="pointMargin" format="dimension" />
         <attr name="pointSize" format="dimension" />
     </declare-styleable>

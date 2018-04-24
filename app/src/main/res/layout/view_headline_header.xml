@@ -2,6 +2,7 @@
 <layout>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -24,13 +25,16 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:textColor="@android:color/white" />
 
-            <com.estyle.teabaike.widget.PointView
-                android:id="@+id/point_view"
+            <com.estyle.teabaike.widget.PointsView
+                android:id="@+id/points_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/activity_horizontal_margin" />
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                app:pointDrawable="@drawable/selector_point"
+                app:pointMargin="@dimen/activity_horizontal_margin"
+                app:pointSize="@dimen/point_size" />
 
         </RelativeLayout>
 
