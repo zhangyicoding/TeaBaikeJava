@@ -49,9 +49,12 @@ dependencies {
     // Glide
     implementation "com.github.bumptech.glide:okhttp3-integration:4.9.0"
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
-    // Dagger
-    implementation 'com.google.dagger:dagger:2.21'
+    // Dagger-Java
+//    implementation 'com.google.dagger:dagger:2.21'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.21'
+    // options-Android
+    implementation 'com.google.dagger:dagger-android-support:2.21'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.21'
     // LeakCanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
