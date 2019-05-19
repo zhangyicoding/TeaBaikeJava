@@ -138,8 +138,12 @@ public class CollectionActivity extends BaseActivity implements
     private void setDeleteEnabled(boolean isDeleteEnabled) {
         this.mIsDeleteEnabled = isDeleteEnabled;
         mAdapter.setDeleteBoxVisibility(isDeleteEnabled);
+        if (isDeleteEnabled) {
+            binding.deleteBtn.show();
+        } else {
+            binding.deleteBtn.hide();
+        }
         int visibility = isDeleteEnabled ? View.VISIBLE : View.INVISIBLE;
-        binding.deleteBtn.setVisibility(visibility);
         binding.checkAllTextView.setVisibility(visibility);
     }
 
