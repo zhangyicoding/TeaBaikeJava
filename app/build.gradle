@@ -60,4 +60,7 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
     // greenDAO
     implementation 'org.greenrobot:greendao:3.2.2'
+    // Chuck
+   debugImplementation "com.readystatesoftware.chuck:library:1.1.0"
+   releaseImplementation "com.readystatesoftware.chuck:library-no-op:1.1.0"
 }
